@@ -30,3 +30,32 @@ p {
 .btn.btn-ghost {
   @apply shadow-none;
 }
+
+
+
+
+.roboto-font {
+  font-family: "Roboto", sans-serif;
+}
+
+
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/Roboto-regular.ttf") format("ttf"), url("/Roboto-regular.ttf") format("ttf");
+  font-weight: semibold;
+  font-style: normal;
+}
+
+
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+
+.text-gradient {
+  background: linear-gradient(to bottom right, white, rgb(73, 58, 139));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
