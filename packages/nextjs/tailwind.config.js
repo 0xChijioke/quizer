@@ -42,14 +42,14 @@ module.exports = {
         dark: {
           primary: "#212638",
           "primary-content": "#F9FBFF",
-          secondary: "#323f61",
+          secondary: "#00003e",
           "secondary-content": "#F9FBFF",
           accent: "#4969A6",
           "accent-content": "#F9FBFF",
           neutral: "#F9FBFF",
           "neutral-content": "#385183",
-          "base-100": "#385183",
-          "base-200": "#2A3655",
+          "base-100": "#000000",
+          "base-200": "#000000",
           "base-300": "#212638",
           "base-content": "#F9FBFF",
           info: "#385183",
@@ -62,12 +62,6 @@ module.exports = {
           ".tooltip": {
             "--tooltip-tail": "6px",
             "--tooltip-color": "oklch(var(--p))",
-          },
-          ".link": {
-            textUnderlineOffset: "2px",
-          },
-          ".link:hover": {
-            opacity: "80%",
           },
         },
       },
