@@ -1,6 +1,39 @@
-# Quizer ❓
+# Quizer 🏆
 
-⚙️ Built using NextJS, RainbowKit, Hardhat, Wagmi, Viem, and Typescript.
+🚀 Welcome to Quizer: Where Learning Meets Rewards!
+
+Quizer is not just a quiz-making tool; it's revolutionlizes way quizzes are created and shared. While still a work in progress, 
+
+Quizer showcases remarkable potential, blending simplicity with cutting-edge technology to deliver an unparalleled user experience on-chain!
+
+
+
+## Tech Stack 🛠️
+
+Quizer is built with the following technologies:
+
+- [Scaffold-ETH 2](https://github.com/scaffold-eth/scaffold-eth-2) - Open source forkable Ethereum dev stack.
+- [Frog](https://frog.fm/) - Minimal & lightweight framework for Farcaster Frames.
+- [Open frame standard](https://github.com/open-frames/standard) - Open Frames is an interoperable standard extending the original Frames specification to support a broader range of applications and protocols.
+- [Privy](https://github.com/Uniswap/v3-sdk) - Simple APIs to manage user data.
+- [Pinata](https://github.com/balancer/balancer-sdk) - Pinata makes it simple to store and retrieve media on IPFS and build social applications with Farcaster.
+
+
+Key Features:
+
+    User-Friendly Quiz Creation:
+    📝 Users input quiz questions effortlessly through the intuitive frontend interface, making quiz creation a breeze.
+
+    Secure Encryption:
+    🔒 Quizer employs state-of-the-art symmetric-key encryption to safeguard quiz content, ensuring utmost privacy and security for users.
+
+    Decentralized Storage on IPFS:
+    🌐 Encrypted quiz content is securely stored on IPFS, leveraging its decentralized architecture to provide resilience and accessibility.
+
+    Interactive Presentation:
+    🎉 With the decrypted quiz content in hand, the contract owner can dynamically present quizzes to users via the frontend interface, enhancing engagement and interactivity.
+
+
 
 
 
@@ -53,6 +86,18 @@ Run smart contract test with `yarn hardhat:test`
 - Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
 - Edit your frontend in `packages/nextjs/pages`
 - Edit your deployment scripts in `packages/hardhat/deploy`
+
+
+`
+
+## Usage 💡 
+
+
+
+## Future Plans 🔭
+
+
+
 
 ## Documentation
 

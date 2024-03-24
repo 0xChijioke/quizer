@@ -1,4 +1,5 @@
 import "@rainbow-me/rainbowkit/styles.css";
+import { getFrameMetadata } from "frog/next";
 import { Metadata } from "next";
 import { ScaffoldEthAppWithProviders } from "~~/components/ScaffoldEthAppWithProviders";
 import { ThemeProvider } from "~~/components/ThemeProvider";
@@ -9,42 +10,46 @@ const baseUrl = process.env.VERCEL_URL
   : `http://localhost:${process.env.PORT || 3000}`;
 const imageUrl = `${baseUrl}/thumbnail.jpg`;
 
-const title = "Quizer";
-const titleTemplate = "%s | Quizer";
-const description = "Built with 🏗 Scaffold-ETH 2";
+export async function generateMetadata(): Promise<Metadata> {
+  const frameTags = await getFrameMetadata(`${process.env.VERCEL_URL || "http://localhost:3000"}/api`);
 
-export const metadata: Metadata = {
-  metadataBase: new URL(baseUrl),
-  title: {
-    default: title,
-    template: titleTemplate,
-  },
-  description,
-  openGraph: {
+  return {
+    metadataBase: new URL(baseUrl),
     title: {
-      default: title,
-      template: titleTemplate,
+      default: "Quizer",
+      template: "%s | Quizer",
     },
-    description,
-    images: [
-      {
-        url: imageUrl,
+    description: "Built with 🏗 Scaffold-ETH 2",
+    openGraph: {
+      title: {
+        default: "Quizer",
+        template: "%s | Quizer",
       },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    images: [imageUrl],
-    title: {
-      default: title,
-      template: titleTemplate,
+      description: "Built with 🏗 Scaffold-ETH 2",
+      images: [
+        {
+          url: imageUrl,
+        },
+      ],
     },
-    description,
-  },
-  icons: {
-    icon: [{ url: "/favicon.png", sizes: "32x32", type: "image/png" }],
-  },
-};
+    twitter: {
+      card: "summary_large_image",
+      images: [imageUrl],
+      title: {
+        default: "Quizer",
+        template: "%s | Quizer",
+      },
+      description: "Built with 🏗 Scaffold-ETH 2",
+    },
+    icons: {
+      icon: [{ url: "/favicon.png", sizes: "32x32", type: "image/png" }],
+    },
+    other: {      
+      frameTags: Object.values(frameTags),
+      'of:accepts:xmtp': '2024-02-01',
+    } 
+  };
+}
 
 const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
   return (

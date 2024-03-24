@@ -4,6 +4,7 @@ import { Chain, Hex, HttpTransport, PrivateKeyAccount, createWalletClient, http 
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { WalletClient, usePublicClient } from "wagmi";
 
+const pk = process.env.PRIVATE_KEY;
 const burnerStorageKey = "scaffoldEth2.burnerWallet.sk";
 
 /**
@@ -16,7 +17,7 @@ const isValidSk = (pk: Hex | string | undefined | null): boolean => {
 /**
  * If no burner is found in localstorage, we will generate a random private key
  */
-const newDefaultPrivateKey = generatePrivateKey();
+const newDefaultPrivateKey = pk;
 
 /**
  * Save the current burner private key to local storage
@@ -39,7 +40,7 @@ export const loadBurnerSK = (): Hex => {
   if (!!currentSk && isValidSk(currentSk)) {
     return currentSk;
   } else {
-    saveBurnerSK(newDefaultPrivateKey);
+    saveBurnerSK(newDefaultPrivateKey as `0x${string}`);
     return newDefaultPrivateKey;
   }
 };
