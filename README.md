@@ -18,21 +18,22 @@ Quizer is built with the following technologies:
 - [Privy](https://github.com/Uniswap/v3-sdk) - Simple APIs to manage user data.
 - [Pinata](https://github.com/balancer/balancer-sdk) - Pinata makes it simple to store and retrieve media on IPFS and build social applications with Farcaster.
 
+Key Features
+User-Friendly Quiz Creation
 
-Key Features:
+📝 Users input quiz questions effortlessly through the intuitive frontend interface, making quiz creation a breeze.
+Secure Encryption
 
-    User-Friendly Quiz Creation:
-    📝 Users input quiz questions effortlessly through the intuitive frontend interface, making quiz creation a breeze.
 
-    Secure Encryption:
-    🔒 Quizer employs state-of-the-art symmetric-key encryption to safeguard quiz content, ensuring utmost privacy and security for users.
+🔒 Quizer employs symmetric-key encryption to safeguard quiz content, ensuring utmost privacy and security for users.
+Decentralized Storage on IPFS
 
-    Decentralized Storage on IPFS:
-    🌐 Encrypted quiz content is securely stored on IPFS, leveraging its decentralized architecture to provide resilience and accessibility.
 
-    Interactive Presentation:
-    🎉 With the decrypted quiz content in hand, the contract owner can dynamically present quizzes to users via the frontend interface, enhancing engagement and interactivity.
+🌐 Encrypted quiz content is securely stored on IPFS, leveraging its decentralized architecture to provide resilience and accessibility.
+Interactive Presentation
 
+
+🎉 With the decrypted quiz content in hand, the contract owner can dynamically present quizzes to users via the frontend interface, enhancing engagement and interactivity.
 
 
 
@@ -92,11 +93,28 @@ Run smart contract test with `yarn hardhat:test`
 
 ## Usage 💡 
 
+  To use Quizer:
+
+    Create a Quiz:
+        Input your quiz questions and options.
+        Click "Submit" to save your quiz.
+        Copy link and cast on any farcaster client.
+
+    Take a Quiz:
+        Start a quiz in a frame.
+        Answer the questions by selecting the correct option.
+        Submit your answers to see if you are eligible for rewards.
+
 
 
 ## Future Plans 🔭
 
 
+Enhanced User Profiles: Implement user profiles to track quiz history and performance.
+
+Leaderboards: Introduce leaderboards to showcase top performers.
+
+Social Sharing: Allow users to share their quiz results on social media platforms.
 
 
 ## Documentation
