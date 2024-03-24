@@ -1,0 +1,805 @@
+{
+  "address": "0x5B821A5fBb14d0D345F2e7017Ec58B8E26aabCEF",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_tokenAddress",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "fid",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "quizId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "score",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "QuizCompleted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "quizId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        }
+      ],
+      "name": "QuizCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "fid",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "quizId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "QuizStarted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "fid",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "quizId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "rewardAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "RewardClaimed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "fid",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "userAddress",
+          "type": "address"
+        }
+      ],
+      "name": "UserDataUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "fid",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "score",
+          "type": "uint256"
+        }
+      ],
+      "name": "UserScoreUpdated",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "fid",
+          "type": "uint256"
+        }
+      ],
+      "name": "calculateCumulativeScore",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "fid",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "quizId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        }
+      ],
+      "name": "claimReward",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_fid",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "_quizId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_score",
+          "type": "uint256"
+        }
+      ],
+      "name": "completeQuiz",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_quizHash",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_threshold",
+          "type": "uint256"
+        }
+      ],
+      "name": "createQuiz",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "quizId",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "fid",
+          "type": "uint256"
+        }
+      ],
+      "name": "getUserData",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_fid",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "_quizId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "restartQuiz",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_fid",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "_quizId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "startQuiz",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "quizHash",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "threshold",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "creator",
+              "type": "address"
+            }
+          ],
+          "internalType": "struct Quizer.Quiz",
+          "name": "quiz",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "fid",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "userAddress",
+          "type": "address"
+        }
+      ],
+      "name": "updateUserData",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive"
+    }
+  ],
+  "transactionHash": "0x2d567730ecd4c847f8794cac18fe51a22e6ede40d30beac9efee1f094a13338a",
+  "receipt": {
+    "to": null,
+    "from": "0xeE196E179096b0EE9eC7a6EC5287fc571dd7a4AF",
+    "contractAddress": "0x5B821A5fBb14d0D345F2e7017Ec58B8E26aabCEF",
+    "transactionIndex": 12,
+    "gasUsed": "1333031",
+    "logsBloom": "0x00000000000000040000008000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000001000000000000000000000000000000000000020000000000000000000800000000000000000000000000000000440000000000000000000000000000008000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x88f23a378d24433f66a1a79dcdeb2fab126fed7567efe7fa7cc63c0dc53159b8",
+    "transactionHash": "0x2d567730ecd4c847f8794cac18fe51a22e6ede40d30beac9efee1f094a13338a",
+    "logs": [
+      {
+        "transactionIndex": 12,
+        "blockNumber": 7754590,
+        "transactionHash": "0x2d567730ecd4c847f8794cac18fe51a22e6ede40d30beac9efee1f094a13338a",
+        "address": "0x5B821A5fBb14d0D345F2e7017Ec58B8E26aabCEF",
+        "topics": [
+          "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
+          "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x000000000000000000000000ee196e179096b0ee9ec7a6ec5287fc571dd7a4af"
+        ],
+        "data": "0x",
+        "logIndex": 6,
+        "blockHash": "0x88f23a378d24433f66a1a79dcdeb2fab126fed7567efe7fa7cc63c0dc53159b8"
+      }
+    ],
+    "blockNumber": 7754590,
+    "cumulativeGasUsed": "3775589",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [
+    "0xBebD603574FB8768aA8077e51ED1B00e80207Ee1"
+  ],
+  "numDeployments": 1,
+  "solcInputHash": "6a735bce4f42dc8c99f7523a76f2c165",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_tokenAddress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"fid\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"quizId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"score\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"QuizCompleted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"quizId\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"}],\"name\":\"QuizCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"fid\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"quizId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"QuizStarted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"fid\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"quizId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"rewardAmount\",\"type\":\"uint256\"}],\"name\":\"RewardClaimed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"fid\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"userAddress\",\"type\":\"address\"}],\"name\":\"UserDataUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"fid\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"score\",\"type\":\"uint256\"}],\"name\":\"UserScoreUpdated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"fid\",\"type\":\"uint256\"}],\"name\":\"calculateCumulativeScore\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"fid\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"quizId\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"}],\"name\":\"claimReward\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_fid\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"_quizId\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"_score\",\"type\":\"uint256\"}],\"name\":\"completeQuiz\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_quizHash\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_threshold\",\"type\":\"uint256\"}],\"name\":\"createQuiz\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"quizId\",\"type\":\"bytes32\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"fid\",\"type\":\"uint256\"}],\"name\":\"getUserData\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_fid\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"_quizId\",\"type\":\"bytes32\"}],\"name\":\"restartQuiz\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_fid\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"_quizId\",\"type\":\"bytes32\"}],\"name\":\"startQuiz\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"quizHash\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"threshold\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"}],\"internalType\":\"struct Quizer.Quiz\",\"name\":\"quiz\",\"type\":\"tuple\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"fid\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"userAddress\",\"type\":\"address\"}],\"name\":\"updateUserData\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"stateMutability\":\"payable\",\"type\":\"receive\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"calculateCumulativeScore(uint256)\":{\"details\":\"Calculates the cumulative score of a user.\",\"params\":{\"fid\":\"Identifier of the user.\"},\"returns\":{\"_0\":\"The cumulative score.\"}},\"claimReward(uint256,bytes32,address)\":{\"details\":\"Allows a user to claim their reward for completing a quiz.\",\"params\":{\"fid\":\"Identifier of the user.\",\"quizId\":\"Identifier of the quiz.\",\"recipient\":\"Address of the reward recipient.\"}},\"completeQuiz(uint256,bytes32,uint256)\":{\"details\":\"Allows the owner to complete a quiz attempt.\",\"params\":{\"_fid\":\"Identifier of the user.\",\"_quizId\":\"Identifier of the quiz.\",\"_score\":\"Score obtained by the user.\"},\"returns\":{\"_0\":\"Whether the user is eligible for reward.\"}},\"constructor\":{\"details\":\"Constructor function.\",\"params\":{\"_tokenAddress\":\"The address of the ERC20 token used for rewards.\"}},\"createQuiz(string,uint256)\":{\"details\":\"Function to create a new quiz.\",\"params\":{\"_quizHash\":\"IPFS hash of the quiz content.\",\"_threshold\":\"Reward threshold for the quiz.\"},\"returns\":{\"quizId\":\"Identifier of the newly created quiz.\"}},\"getUserData(uint256)\":{\"details\":\"Function to retrieve user data.\",\"params\":{\"fid\":\"Identifier of the user.\"},\"returns\":{\"_0\":\"userAddress Address of the user.\",\"_1\":\"score Score of the user.\"}},\"owner()\":{\"details\":\"Returns the address of the current owner.\"},\"renounceOwnership()\":{\"details\":\"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.\"},\"restartQuiz(uint256,bytes32)\":{\"details\":\"Allows a user to restart a quiz attempt.\",\"params\":{\"_fid\":\"Identifier of the user.\",\"_quizId\":\"Identifier of the quiz.\"}},\"startQuiz(uint256,bytes32)\":{\"details\":\"Function to start a quiz attempt.\",\"params\":{\"_fid\":\"Identifier of the user.\",\"_quizId\":\"Identifier of the quiz.\"},\"returns\":{\"quiz\":\"Quiz details.\"}},\"transferOwnership(address)\":{\"details\":\"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.\"},\"updateUserData(uint256,address)\":{\"details\":\"Function to update user data.\",\"params\":{\"fid\":\"Identifier of the user.\",\"userAddress\":\"Address of the user.\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"notice\":\"A smart contract that allows users to create quizzes and earn rewards for completing them. It allows the owner to manage quizzes, quiz metadata, and user activities.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/Quizer.sol\":\"Quizer\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/access/Ownable.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v4.9.0) (access/Ownable.sol)\\n\\npragma solidity ^0.8.0;\\n\\nimport \\\"../utils/Context.sol\\\";\\n\\n/**\\n * @dev Contract module which provides a basic access control mechanism, where\\n * there is an account (an owner) that can be granted exclusive access to\\n * specific functions.\\n *\\n * By default, the owner account will be the one that deploys the contract. This\\n * can later be changed with {transferOwnership}.\\n *\\n * This module is used through inheritance. It will make available the modifier\\n * `onlyOwner`, which can be applied to your functions to restrict their use to\\n * the owner.\\n */\\nabstract contract Ownable is Context {\\n    address private _owner;\\n\\n    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);\\n\\n    /**\\n     * @dev Initializes the contract setting the deployer as the initial owner.\\n     */\\n    constructor() {\\n        _transferOwnership(_msgSender());\\n    }\\n\\n    /**\\n     * @dev Throws if called by any account other than the owner.\\n     */\\n    modifier onlyOwner() {\\n        _checkOwner();\\n        _;\\n    }\\n\\n    /**\\n     * @dev Returns the address of the current owner.\\n     */\\n    function owner() public view virtual returns (address) {\\n        return _owner;\\n    }\\n\\n    /**\\n     * @dev Throws if the sender is not the owner.\\n     */\\n    function _checkOwner() internal view virtual {\\n        require(owner() == _msgSender(), \\\"Ownable: caller is not the owner\\\");\\n    }\\n\\n    /**\\n     * @dev Leaves the contract without owner. It will not be possible to call\\n     * `onlyOwner` functions. Can only be called by the current owner.\\n     *\\n     * NOTE: Renouncing ownership will leave the contract without an owner,\\n     * thereby disabling any functionality that is only available to the owner.\\n     */\\n    function renounceOwnership() public virtual onlyOwner {\\n        _transferOwnership(address(0));\\n    }\\n\\n    /**\\n     * @dev Transfers ownership of the contract to a new account (`newOwner`).\\n     * Can only be called by the current owner.\\n     */\\n    function transferOwnership(address newOwner) public virtual onlyOwner {\\n        require(newOwner != address(0), \\\"Ownable: new owner is the zero address\\\");\\n        _transferOwnership(newOwner);\\n    }\\n\\n    /**\\n     * @dev Transfers ownership of the contract to a new account (`newOwner`).\\n     * Internal function without access restriction.\\n     */\\n    function _transferOwnership(address newOwner) internal virtual {\\n        address oldOwner = _owner;\\n        _owner = newOwner;\\n        emit OwnershipTransferred(oldOwner, newOwner);\\n    }\\n}\\n\",\"keccak256\":\"0xba43b97fba0d32eb4254f6a5a297b39a19a247082a02d6e69349e071e2946218\",\"license\":\"MIT\"},\"@openzeppelin/contracts/token/ERC20/IERC20.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v4.9.0) (token/ERC20/IERC20.sol)\\n\\npragma solidity ^0.8.0;\\n\\n/**\\n * @dev Interface of the ERC20 standard as defined in the EIP.\\n */\\ninterface IERC20 {\\n    /**\\n     * @dev Emitted when `value` tokens are moved from one account (`from`) to\\n     * another (`to`).\\n     *\\n     * Note that `value` may be zero.\\n     */\\n    event Transfer(address indexed from, address indexed to, uint256 value);\\n\\n    /**\\n     * @dev Emitted when the allowance of a `spender` for an `owner` is set by\\n     * a call to {approve}. `value` is the new allowance.\\n     */\\n    event Approval(address indexed owner, address indexed spender, uint256 value);\\n\\n    /**\\n     * @dev Returns the amount of tokens in existence.\\n     */\\n    function totalSupply() external view returns (uint256);\\n\\n    /**\\n     * @dev Returns the amount of tokens owned by `account`.\\n     */\\n    function balanceOf(address account) external view returns (uint256);\\n\\n    /**\\n     * @dev Moves `amount` tokens from the caller's account to `to`.\\n     *\\n     * Returns a boolean value indicating whether the operation succeeded.\\n     *\\n     * Emits a {Transfer} event.\\n     */\\n    function transfer(address to, uint256 amount) external returns (bool);\\n\\n    /**\\n     * @dev Returns the remaining number of tokens that `spender` will be\\n     * allowed to spend on behalf of `owner` through {transferFrom}. This is\\n     * zero by default.\\n     *\\n     * This value changes when {approve} or {transferFrom} are called.\\n     */\\n    function allowance(address owner, address spender) external view returns (uint256);\\n\\n    /**\\n     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.\\n     *\\n     * Returns a boolean value indicating whether the operation succeeded.\\n     *\\n     * IMPORTANT: Beware that changing an allowance with this method brings the risk\\n     * that someone may use both the old and the new allowance by unfortunate\\n     * transaction ordering. One possible solution to mitigate this race\\n     * condition is to first reduce the spender's allowance to 0 and set the\\n     * desired value afterwards:\\n     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729\\n     *\\n     * Emits an {Approval} event.\\n     */\\n    function approve(address spender, uint256 amount) external returns (bool);\\n\\n    /**\\n     * @dev Moves `amount` tokens from `from` to `to` using the\\n     * allowance mechanism. `amount` is then deducted from the caller's\\n     * allowance.\\n     *\\n     * Returns a boolean value indicating whether the operation succeeded.\\n     *\\n     * Emits a {Transfer} event.\\n     */\\n    function transferFrom(address from, address to, uint256 amount) external returns (bool);\\n}\\n\",\"keccak256\":\"0x287b55befed2961a7eabd7d7b1b2839cbca8a5b80ef8dcbb25ed3d4c2002c305\",\"license\":\"MIT\"},\"@openzeppelin/contracts/utils/Context.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts v4.4.1 (utils/Context.sol)\\n\\npragma solidity ^0.8.0;\\n\\n/**\\n * @dev Provides information about the current execution context, including the\\n * sender of the transaction and its data. While these are generally available\\n * via msg.sender and msg.data, they should not be accessed in such a direct\\n * manner, since when dealing with meta-transactions the account sending and\\n * paying for execution may not be the actual sender (as far as an application\\n * is concerned).\\n *\\n * This contract is only required for intermediate, library-like contracts.\\n */\\nabstract contract Context {\\n    function _msgSender() internal view virtual returns (address) {\\n        return msg.sender;\\n    }\\n\\n    function _msgData() internal view virtual returns (bytes calldata) {\\n        return msg.data;\\n    }\\n}\\n\",\"keccak256\":\"0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7\",\"license\":\"MIT\"},\"@openzeppelin/contracts/utils/Strings.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v4.9.0) (utils/Strings.sol)\\n\\npragma solidity ^0.8.0;\\n\\nimport \\\"./math/Math.sol\\\";\\nimport \\\"./math/SignedMath.sol\\\";\\n\\n/**\\n * @dev String operations.\\n */\\nlibrary Strings {\\n    bytes16 private constant _SYMBOLS = \\\"0123456789abcdef\\\";\\n    uint8 private constant _ADDRESS_LENGTH = 20;\\n\\n    /**\\n     * @dev Converts a `uint256` to its ASCII `string` decimal representation.\\n     */\\n    function toString(uint256 value) internal pure returns (string memory) {\\n        unchecked {\\n            uint256 length = Math.log10(value) + 1;\\n            string memory buffer = new string(length);\\n            uint256 ptr;\\n            /// @solidity memory-safe-assembly\\n            assembly {\\n                ptr := add(buffer, add(32, length))\\n            }\\n            while (true) {\\n                ptr--;\\n                /// @solidity memory-safe-assembly\\n                assembly {\\n                    mstore8(ptr, byte(mod(value, 10), _SYMBOLS))\\n                }\\n                value /= 10;\\n                if (value == 0) break;\\n            }\\n            return buffer;\\n        }\\n    }\\n\\n    /**\\n     * @dev Converts a `int256` to its ASCII `string` decimal representation.\\n     */\\n    function toString(int256 value) internal pure returns (string memory) {\\n        return string(abi.encodePacked(value < 0 ? \\\"-\\\" : \\\"\\\", toString(SignedMath.abs(value))));\\n    }\\n\\n    /**\\n     * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation.\\n     */\\n    function toHexString(uint256 value) internal pure returns (string memory) {\\n        unchecked {\\n            return toHexString(value, Math.log256(value) + 1);\\n        }\\n    }\\n\\n    /**\\n     * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation with fixed length.\\n     */\\n    function toHexString(uint256 value, uint256 length) internal pure returns (string memory) {\\n        bytes memory buffer = new bytes(2 * length + 2);\\n        buffer[0] = \\\"0\\\";\\n        buffer[1] = \\\"x\\\";\\n        for (uint256 i = 2 * length + 1; i > 1; --i) {\\n            buffer[i] = _SYMBOLS[value & 0xf];\\n            value >>= 4;\\n        }\\n        require(value == 0, \\\"Strings: hex length insufficient\\\");\\n        return string(buffer);\\n    }\\n\\n    /**\\n     * @dev Converts an `address` with fixed length of 20 bytes to its not checksummed ASCII `string` hexadecimal representation.\\n     */\\n    function toHexString(address addr) internal pure returns (string memory) {\\n        return toHexString(uint256(uint160(addr)), _ADDRESS_LENGTH);\\n    }\\n\\n    /**\\n     * @dev Returns true if the two strings are equal.\\n     */\\n    function equal(string memory a, string memory b) internal pure returns (bool) {\\n        return keccak256(bytes(a)) == keccak256(bytes(b));\\n    }\\n}\\n\",\"keccak256\":\"0x3088eb2868e8d13d89d16670b5f8612c4ab9ff8956272837d8e90106c59c14a0\",\"license\":\"MIT\"},\"@openzeppelin/contracts/utils/math/Math.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v4.9.0) (utils/math/Math.sol)\\n\\npragma solidity ^0.8.0;\\n\\n/**\\n * @dev Standard math utilities missing in the Solidity language.\\n */\\nlibrary Math {\\n    enum Rounding {\\n        Down, // Toward negative infinity\\n        Up, // Toward infinity\\n        Zero // Toward zero\\n    }\\n\\n    /**\\n     * @dev Returns the largest of two numbers.\\n     */\\n    function max(uint256 a, uint256 b) internal pure returns (uint256) {\\n        return a > b ? a : b;\\n    }\\n\\n    /**\\n     * @dev Returns the smallest of two numbers.\\n     */\\n    function min(uint256 a, uint256 b) internal pure returns (uint256) {\\n        return a < b ? a : b;\\n    }\\n\\n    /**\\n     * @dev Returns the average of two numbers. The result is rounded towards\\n     * zero.\\n     */\\n    function average(uint256 a, uint256 b) internal pure returns (uint256) {\\n        // (a + b) / 2 can overflow.\\n        return (a & b) + (a ^ b) / 2;\\n    }\\n\\n    /**\\n     * @dev Returns the ceiling of the division of two numbers.\\n     *\\n     * This differs from standard division with `/` in that it rounds up instead\\n     * of rounding down.\\n     */\\n    function ceilDiv(uint256 a, uint256 b) internal pure returns (uint256) {\\n        // (a + b - 1) / b can overflow on addition, so we distribute.\\n        return a == 0 ? 0 : (a - 1) / b + 1;\\n    }\\n\\n    /**\\n     * @notice Calculates floor(x * y / denominator) with full precision. Throws if result overflows a uint256 or denominator == 0\\n     * @dev Original credit to Remco Bloemen under MIT license (https://xn--2-umb.com/21/muldiv)\\n     * with further edits by Uniswap Labs also under MIT license.\\n     */\\n    function mulDiv(uint256 x, uint256 y, uint256 denominator) internal pure returns (uint256 result) {\\n        unchecked {\\n            // 512-bit multiply [prod1 prod0] = x * y. Compute the product mod 2^256 and mod 2^256 - 1, then use\\n            // use the Chinese Remainder Theorem to reconstruct the 512 bit result. The result is stored in two 256\\n            // variables such that product = prod1 * 2^256 + prod0.\\n            uint256 prod0; // Least significant 256 bits of the product\\n            uint256 prod1; // Most significant 256 bits of the product\\n            assembly {\\n                let mm := mulmod(x, y, not(0))\\n                prod0 := mul(x, y)\\n                prod1 := sub(sub(mm, prod0), lt(mm, prod0))\\n            }\\n\\n            // Handle non-overflow cases, 256 by 256 division.\\n            if (prod1 == 0) {\\n                // Solidity will revert if denominator == 0, unlike the div opcode on its own.\\n                // The surrounding unchecked block does not change this fact.\\n                // See https://docs.soliditylang.org/en/latest/control-structures.html#checked-or-unchecked-arithmetic.\\n                return prod0 / denominator;\\n            }\\n\\n            // Make sure the result is less than 2^256. Also prevents denominator == 0.\\n            require(denominator > prod1, \\\"Math: mulDiv overflow\\\");\\n\\n            ///////////////////////////////////////////////\\n            // 512 by 256 division.\\n            ///////////////////////////////////////////////\\n\\n            // Make division exact by subtracting the remainder from [prod1 prod0].\\n            uint256 remainder;\\n            assembly {\\n                // Compute remainder using mulmod.\\n                remainder := mulmod(x, y, denominator)\\n\\n                // Subtract 256 bit number from 512 bit number.\\n                prod1 := sub(prod1, gt(remainder, prod0))\\n                prod0 := sub(prod0, remainder)\\n            }\\n\\n            // Factor powers of two out of denominator and compute largest power of two divisor of denominator. Always >= 1.\\n            // See https://cs.stackexchange.com/q/138556/92363.\\n\\n            // Does not overflow because the denominator cannot be zero at this stage in the function.\\n            uint256 twos = denominator & (~denominator + 1);\\n            assembly {\\n                // Divide denominator by twos.\\n                denominator := div(denominator, twos)\\n\\n                // Divide [prod1 prod0] by twos.\\n                prod0 := div(prod0, twos)\\n\\n                // Flip twos such that it is 2^256 / twos. If twos is zero, then it becomes one.\\n                twos := add(div(sub(0, twos), twos), 1)\\n            }\\n\\n            // Shift in bits from prod1 into prod0.\\n            prod0 |= prod1 * twos;\\n\\n            // Invert denominator mod 2^256. Now that denominator is an odd number, it has an inverse modulo 2^256 such\\n            // that denominator * inv = 1 mod 2^256. Compute the inverse by starting with a seed that is correct for\\n            // four bits. That is, denominator * inv = 1 mod 2^4.\\n            uint256 inverse = (3 * denominator) ^ 2;\\n\\n            // Use the Newton-Raphson iteration to improve the precision. Thanks to Hensel's lifting lemma, this also works\\n            // in modular arithmetic, doubling the correct bits in each step.\\n            inverse *= 2 - denominator * inverse; // inverse mod 2^8\\n            inverse *= 2 - denominator * inverse; // inverse mod 2^16\\n            inverse *= 2 - denominator * inverse; // inverse mod 2^32\\n            inverse *= 2 - denominator * inverse; // inverse mod 2^64\\n            inverse *= 2 - denominator * inverse; // inverse mod 2^128\\n            inverse *= 2 - denominator * inverse; // inverse mod 2^256\\n\\n            // Because the division is now exact we can divide by multiplying with the modular inverse of denominator.\\n            // This will give us the correct result modulo 2^256. Since the preconditions guarantee that the outcome is\\n            // less than 2^256, this is the final result. We don't need to compute the high bits of the result and prod1\\n            // is no longer required.\\n            result = prod0 * inverse;\\n            return result;\\n        }\\n    }\\n\\n    /**\\n     * @notice Calculates x * y / denominator with full precision, following the selected rounding direction.\\n     */\\n    function mulDiv(uint256 x, uint256 y, uint256 denominator, Rounding rounding) internal pure returns (uint256) {\\n        uint256 result = mulDiv(x, y, denominator);\\n        if (rounding == Rounding.Up && mulmod(x, y, denominator) > 0) {\\n            result += 1;\\n        }\\n        return result;\\n    }\\n\\n    /**\\n     * @dev Returns the square root of a number. If the number is not a perfect square, the value is rounded down.\\n     *\\n     * Inspired by Henry S. Warren, Jr.'s \\\"Hacker's Delight\\\" (Chapter 11).\\n     */\\n    function sqrt(uint256 a) internal pure returns (uint256) {\\n        if (a == 0) {\\n            return 0;\\n        }\\n\\n        // For our first guess, we get the biggest power of 2 which is smaller than the square root of the target.\\n        //\\n        // We know that the \\\"msb\\\" (most significant bit) of our target number `a` is a power of 2 such that we have\\n        // `msb(a) <= a < 2*msb(a)`. This value can be written `msb(a)=2**k` with `k=log2(a)`.\\n        //\\n        // This can be rewritten `2**log2(a) <= a < 2**(log2(a) + 1)`\\n        // \\u2192 `sqrt(2**k) <= sqrt(a) < sqrt(2**(k+1))`\\n        // \\u2192 `2**(k/2) <= sqrt(a) < 2**((k+1)/2) <= 2**(k/2 + 1)`\\n        //\\n        // Consequently, `2**(log2(a) / 2)` is a good first approximation of `sqrt(a)` with at least 1 correct bit.\\n        uint256 result = 1 << (log2(a) >> 1);\\n\\n        // At this point `result` is an estimation with one bit of precision. We know the true value is a uint128,\\n        // since it is the square root of a uint256. Newton's method converges quadratically (precision doubles at\\n        // every iteration). We thus need at most 7 iteration to turn our partial result with one bit of precision\\n        // into the expected uint128 result.\\n        unchecked {\\n            result = (result + a / result) >> 1;\\n            result = (result + a / result) >> 1;\\n            result = (result + a / result) >> 1;\\n            result = (result + a / result) >> 1;\\n            result = (result + a / result) >> 1;\\n            result = (result + a / result) >> 1;\\n            result = (result + a / result) >> 1;\\n            return min(result, a / result);\\n        }\\n    }\\n\\n    /**\\n     * @notice Calculates sqrt(a), following the selected rounding direction.\\n     */\\n    function sqrt(uint256 a, Rounding rounding) internal pure returns (uint256) {\\n        unchecked {\\n            uint256 result = sqrt(a);\\n            return result + (rounding == Rounding.Up && result * result < a ? 1 : 0);\\n        }\\n    }\\n\\n    /**\\n     * @dev Return the log in base 2, rounded down, of a positive value.\\n     * Returns 0 if given 0.\\n     */\\n    function log2(uint256 value) internal pure returns (uint256) {\\n        uint256 result = 0;\\n        unchecked {\\n            if (value >> 128 > 0) {\\n                value >>= 128;\\n                result += 128;\\n            }\\n            if (value >> 64 > 0) {\\n                value >>= 64;\\n                result += 64;\\n            }\\n            if (value >> 32 > 0) {\\n                value >>= 32;\\n                result += 32;\\n            }\\n            if (value >> 16 > 0) {\\n                value >>= 16;\\n                result += 16;\\n            }\\n            if (value >> 8 > 0) {\\n                value >>= 8;\\n                result += 8;\\n            }\\n            if (value >> 4 > 0) {\\n                value >>= 4;\\n                result += 4;\\n            }\\n            if (value >> 2 > 0) {\\n                value >>= 2;\\n                result += 2;\\n            }\\n            if (value >> 1 > 0) {\\n                result += 1;\\n            }\\n        }\\n        return result;\\n    }\\n\\n    /**\\n     * @dev Return the log in base 2, following the selected rounding direction, of a positive value.\\n     * Returns 0 if given 0.\\n     */\\n    function log2(uint256 value, Rounding rounding) internal pure returns (uint256) {\\n        unchecked {\\n            uint256 result = log2(value);\\n            return result + (rounding == Rounding.Up && 1 << result < value ? 1 : 0);\\n        }\\n    }\\n\\n    /**\\n     * @dev Return the log in base 10, rounded down, of a positive value.\\n     * Returns 0 if given 0.\\n     */\\n    function log10(uint256 value) internal pure returns (uint256) {\\n        uint256 result = 0;\\n        unchecked {\\n            if (value >= 10 ** 64) {\\n                value /= 10 ** 64;\\n                result += 64;\\n            }\\n            if (value >= 10 ** 32) {\\n                value /= 10 ** 32;\\n                result += 32;\\n            }\\n            if (value >= 10 ** 16) {\\n                value /= 10 ** 16;\\n                result += 16;\\n            }\\n            if (value >= 10 ** 8) {\\n                value /= 10 ** 8;\\n                result += 8;\\n            }\\n            if (value >= 10 ** 4) {\\n                value /= 10 ** 4;\\n                result += 4;\\n            }\\n            if (value >= 10 ** 2) {\\n                value /= 10 ** 2;\\n                result += 2;\\n            }\\n            if (value >= 10 ** 1) {\\n                result += 1;\\n            }\\n        }\\n        return result;\\n    }\\n\\n    /**\\n     * @dev Return the log in base 10, following the selected rounding direction, of a positive value.\\n     * Returns 0 if given 0.\\n     */\\n    function log10(uint256 value, Rounding rounding) internal pure returns (uint256) {\\n        unchecked {\\n            uint256 result = log10(value);\\n            return result + (rounding == Rounding.Up && 10 ** result < value ? 1 : 0);\\n        }\\n    }\\n\\n    /**\\n     * @dev Return the log in base 256, rounded down, of a positive value.\\n     * Returns 0 if given 0.\\n     *\\n     * Adding one to the result gives the number of pairs of hex symbols needed to represent `value` as a hex string.\\n     */\\n    function log256(uint256 value) internal pure returns (uint256) {\\n        uint256 result = 0;\\n        unchecked {\\n            if (value >> 128 > 0) {\\n                value >>= 128;\\n                result += 16;\\n            }\\n            if (value >> 64 > 0) {\\n                value >>= 64;\\n                result += 8;\\n            }\\n            if (value >> 32 > 0) {\\n                value >>= 32;\\n                result += 4;\\n            }\\n            if (value >> 16 > 0) {\\n                value >>= 16;\\n                result += 2;\\n            }\\n            if (value >> 8 > 0) {\\n                result += 1;\\n            }\\n        }\\n        return result;\\n    }\\n\\n    /**\\n     * @dev Return the log in base 256, following the selected rounding direction, of a positive value.\\n     * Returns 0 if given 0.\\n     */\\n    function log256(uint256 value, Rounding rounding) internal pure returns (uint256) {\\n        unchecked {\\n            uint256 result = log256(value);\\n            return result + (rounding == Rounding.Up && 1 << (result << 3) < value ? 1 : 0);\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0xe4455ac1eb7fc497bb7402579e7b4d64d928b846fce7d2b6fde06d366f21c2b3\",\"license\":\"MIT\"},\"@openzeppelin/contracts/utils/math/SignedMath.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v4.8.0) (utils/math/SignedMath.sol)\\n\\npragma solidity ^0.8.0;\\n\\n/**\\n * @dev Standard signed math utilities missing in the Solidity language.\\n */\\nlibrary SignedMath {\\n    /**\\n     * @dev Returns the largest of two signed numbers.\\n     */\\n    function max(int256 a, int256 b) internal pure returns (int256) {\\n        return a > b ? a : b;\\n    }\\n\\n    /**\\n     * @dev Returns the smallest of two signed numbers.\\n     */\\n    function min(int256 a, int256 b) internal pure returns (int256) {\\n        return a < b ? a : b;\\n    }\\n\\n    /**\\n     * @dev Returns the average of two signed numbers without overflow.\\n     * The result is rounded towards zero.\\n     */\\n    function average(int256 a, int256 b) internal pure returns (int256) {\\n        // Formula from the book \\\"Hacker's Delight\\\"\\n        int256 x = (a & b) + ((a ^ b) >> 1);\\n        return x + (int256(uint256(x) >> 255) & (a ^ b));\\n    }\\n\\n    /**\\n     * @dev Returns the absolute unsigned value of a signed value.\\n     */\\n    function abs(int256 n) internal pure returns (uint256) {\\n        unchecked {\\n            // must be unchecked in order to support `n = type(int256).min`\\n            return uint256(n >= 0 ? n : -n);\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0xf92515413956f529d95977adc9b0567d583c6203fc31ab1c23824c35187e3ddc\",\"license\":\"MIT\"},\"contracts/Quizer.sol\":{\"content\":\"//SPDX-License-Identifier: MIT\\r\\npragma solidity >=0.8.0 <0.9.0;\\r\\n\\r\\n\\r\\n// openzeppelin\\r\\nimport \\\"@openzeppelin/contracts/token/ERC20/IERC20.sol\\\";\\r\\nimport \\\"@openzeppelin/contracts/access/Ownable.sol\\\";\\r\\nimport \\\"@openzeppelin/contracts/utils/Strings.sol\\\";\\r\\n\\r\\n\\r\\n/**\\r\\n * A smart contract that allows users to create quizzes and earn rewards for completing them.\\r\\n * It allows the owner to manage quizzes, quiz metadata, and user activities.\\r\\n */\\r\\ncontract Quizer is Ownable {\\r\\n    using Strings for uint256;\\r\\n\\r\\n    IERC20 private quizToken;\\r\\n    address private tokenAddress;\\r\\n    \\r\\n\\r\\n\\t// State Variables\\r\\n\\r\\n\\t// Structure to represent user data\\r\\n    struct UserData {\\r\\n        address userAddress; // User's verified address\\r\\n        uint256 score;       // User's score\\r\\n    }\\r\\n\\r\\n    // Structure to represent quiz data\\r\\n    struct Quiz {\\r\\n        string quizHash;    // IPFS hash of the quiz content\\r\\n        uint256 threshold;     // Reward threshold for the quiz\\r\\n        address creator;    // Creator of the quiz\\r\\n    }\\r\\n\\r\\n    struct QuizAttempt {\\r\\n        QuizState state; // State of the quiz attempt\\r\\n        uint256 score;  // Score achieved by the user\\r\\n        uint256 startTime; // Time when the quiz was started\\r\\n        uint256 completionTime; // Time when the quiz was completed\\r\\n        bool eligible; // Flag indicating if the user is eligible for a reward\\r\\n        bool rewardClaimed; // Flag indicating if the reward was claimed\\r\\n        bool restarted; // Flag indicating if the quiz attempt was restarted\\r\\n    }\\r\\n\\r\\n    \\r\\n    \\r\\n    // Enum to represent the state of a quiz attempt\\r\\n    enum QuizState { NotStarted, InProgress, Completed }\\r\\n\\r\\n\\r\\n    // Mapping to store quiz attempts for each user\\r\\n    mapping(uint256 => mapping(bytes32 => QuizAttempt)) private userQuizAttempts;\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n    // Mapping to store IPFS hash with its associated identifier\\r\\n    mapping(bytes32 => Quiz) private quizzes;\\r\\n\\r\\n    // Mapping to store user data with their FID\\r\\n    mapping(uint256 => UserData) private userData;\\r\\n\\r\\n    // Mapping to store quiz attempts for each user\\r\\n    mapping(uint256 => bytes32[]) private userQuizIds;\\r\\n\\r\\n    \\r\\n\\r\\n    \\r\\n    // Event to emit when IPFS hash is stored\\r\\n    event QuizCreated(bytes32 indexed quizId, address indexed creator);\\r\\n\\r\\n    // Event to emit when a user requests to take a quiz\\r\\n    event QuizStarted(uint256 indexed fid, bytes32 indexed quizId, uint256 timestamp);\\r\\n\\r\\n    // Event to emit when a user completes a quiz\\r\\n    event QuizCompleted(uint256 indexed fid, bytes32 indexed quizId, uint256 score, uint256 timestamp);\\r\\n\\r\\n\\r\\n    // Event to emit when a user completes a quiz and earns reward\\r\\n    event RewardClaimed(uint256 indexed fid, bytes32 quizId, uint256 rewardAmount);\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n\\t// Event to emit when user data is updated\\r\\n    event UserDataUpdated(uint256 indexed fid, address indexed userAddress);\\r\\n\\r\\n\\t// Event to emit when user score is updated\\r\\n    event UserScoreUpdated(uint256 indexed fid, address, uint256 score);\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n    /**\\r\\n     * @dev Constructor function.\\r\\n     * @param _tokenAddress The address of the ERC20 token used for rewards.\\r\\n     */\\r\\n    constructor(address _tokenAddress) {\\r\\n        tokenAddress = _tokenAddress;\\r\\n        quizToken = IERC20(tokenAddress);\\r\\n    }\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n    /**\\r\\n     * @dev Function to create a new quiz.\\r\\n     * @param _quizHash IPFS hash of the quiz content.\\r\\n     * @param _threshold Reward threshold for the quiz.\\r\\n     * @return quizId Identifier of the newly created quiz.\\r\\n     */\\r\\n    function createQuiz(string memory _quizHash, uint256 _threshold) external returns (bytes32 quizId) {\\r\\n        require(_threshold > 10 && _threshold <= 100, \\\"Invalid threshold percentage\\\");\\r\\n        // Generate keccak256 hash of the IPFS hash\\r\\n        quizId = keccak256(abi.encodePacked(_quizHash, _threshold, msg.sender));\\r\\n\\r\\n        // Store hash in the mapping\\r\\n        quizzes[quizId] = Quiz(_quizHash, _threshold, msg.sender);\\r\\n\\r\\n        // Emit event\\r\\n        emit QuizCreated(quizId, msg.sender);\\r\\n\\r\\n    }\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n    /**\\r\\n     * @dev Function to start a quiz attempt.\\r\\n     * @param _fid Identifier of the user.\\r\\n     * @param _quizId Identifier of the quiz.\\r\\n     * @return quiz Quiz details.\\r\\n     */\\r\\n    function startQuiz(uint256 _fid, bytes32 _quizId) external  returns(Quiz memory quiz) {\\r\\n        // Check if the quizId is valid\\r\\n        require(bytes(quizzes[_quizId].quizHash).length != 0, \\\"Invalid quizId\\\");\\r\\n\\r\\n        // Check if the user's fid exists, if not, update user data\\r\\n        if (userData[_fid].userAddress == address(0)) {\\r\\n            _updateUserData(_fid, address(0), 0); \\r\\n        }\\r\\n\\r\\n\\r\\n\\r\\n        // Check if the user has not already started the quiz\\r\\n        require(userQuizAttempts[_fid][_quizId].state == QuizState.NotStarted, \\\"Quiz already in progress or completed\\\");\\r\\n\\r\\n        \\r\\n        \\r\\n        // Add the quizId to the user's list of attempts\\r\\n        userQuizIds[_fid].push(_quizId);\\r\\n\\r\\n        // Get the quiz struct\\r\\n        quiz = _getQuiz(_quizId);\\r\\n\\r\\n\\r\\n        userQuizAttempts[_fid][_quizId].state = QuizState.InProgress;\\r\\n        userQuizAttempts[_fid][_quizId].startTime = block.timestamp;\\r\\n\\r\\n        emit QuizStarted(_fid, _quizId, block.timestamp);\\r\\n\\r\\n    }\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n    /**\\r\\n     * @dev Allows a user to restart a quiz attempt.\\r\\n     * @param _fid Identifier of the user.\\r\\n     * @param _quizId Identifier of the quiz.\\r\\n     */\\r\\n    function restartQuiz(uint256 _fid, bytes32 _quizId) external {\\r\\n        require(userQuizAttempts[_fid][_quizId].state == QuizState.InProgress || userQuizAttempts[_fid][_quizId].state == QuizState.Completed, \\\"Quiz not Started\\\");\\r\\n        require(!userQuizAttempts[_fid][_quizId].restarted, \\\"Quiz already restarted\\\");\\r\\n\\r\\n        userQuizAttempts[_fid][_quizId].restarted = true;\\r\\n    }\\r\\n\\r\\n\\r\\n\\r\\n    /**\\r\\n     * @dev Allows the owner to complete a quiz attempt.\\r\\n     * @param _fid Identifier of the user.\\r\\n     * @param _quizId Identifier of the quiz.\\r\\n     * @param _score Score obtained by the user.\\r\\n     * @return Whether the user is eligible for reward.\\r\\n     */\\r\\n    function completeQuiz(uint256 _fid, bytes32 _quizId, uint256 _score) external onlyOwner returns(bool) {\\r\\n        // Check if the user has started the quiz\\r\\n        require(userQuizAttempts[_fid][_quizId].state == QuizState.InProgress, \\\"Quiz not started\\\");\\r\\n\\r\\n        QuizAttempt storage attempt = userQuizAttempts[_fid][_quizId];\\r\\n\\r\\n\\r\\n        // Normalize the score to a percentage\\r\\n        uint256 normalizedScore = (_score * 100) / 5; // total of 5\\r\\n\\r\\n        uint256 adjustedScore;\\r\\n        \\r\\n\\r\\n        if (attempt.restarted) {\\r\\n            // 30% reduction for restarted quiz\\r\\n            adjustedScore = (normalizedScore * 7) / 10;\\r\\n\\r\\n        } else {\\r\\n            adjustedScore = normalizedScore; // Full score if not restarted\\r\\n        }\\r\\n\\r\\n\\r\\n        // Check if the user's score meets the reward threshold\\r\\n        if (adjustedScore >= 80) { // Threshold set at 80%\\r\\n            // Mark reward as claimable\\r\\n            userQuizAttempts[_fid][_quizId].eligible = true;\\r\\n        }\\r\\n\\r\\n\\r\\n        \\r\\n        // Update cumulative score in userData\\r\\n        uint256 cumulativeScore = calculateCumulativeScore(_fid);\\r\\n        userData[_fid].score = cumulativeScore;\\r\\n\\r\\n        // Update attempt data\\r\\n        attempt.state = QuizState.Completed;\\r\\n        attempt.score = adjustedScore;\\r\\n        attempt.completionTime = block.timestamp;\\r\\n\\r\\n\\r\\n        // Emit QuizCompleted event\\r\\n        emit QuizCompleted(_fid, _quizId, adjustedScore, block.timestamp);\\r\\n\\r\\n\\r\\n        return userQuizAttempts[_fid][_quizId].eligible;\\r\\n    }\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n    /**\\r\\n     * @dev Calculates the cumulative score of a user.\\r\\n     * @param fid Identifier of the user.\\r\\n     * @return The cumulative score.\\r\\n     */\\r\\n    function calculateCumulativeScore(uint256 fid) public view returns (uint256) {\\r\\n        uint256 totalScore = 0;\\r\\n        uint256 totalPossibleScore = userQuizIds[fid].length * 100;\\r\\n\\r\\n        for (uint256 i = 0; i < userQuizIds[fid].length; i++) {\\r\\n            bytes32 quizId = userQuizIds[fid][i];\\r\\n            if (userQuizAttempts[fid][quizId].state == QuizState.Completed) {\\r\\n                totalScore += userQuizAttempts[fid][quizId].score;\\r\\n            }\\r\\n        }\\r\\n\\r\\n        if (totalPossibleScore == 0) {\\r\\n            return 0;\\r\\n        } else {\\r\\n            return (totalScore * 100) / totalPossibleScore;\\r\\n        }\\r\\n    }\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n    /**\\r\\n     * @dev Allows a user to claim their reward for completing a quiz.\\r\\n     * @param fid Identifier of the user.\\r\\n     * @param quizId Identifier of the quiz.\\r\\n     * @param recipient Address of the reward recipient.\\r\\n     */\\r\\n    function claimReward(uint256 fid, bytes32 quizId, address recipient) external {\\r\\n        require(userQuizAttempts[fid][quizId].eligible, \\\"Not eligible for reward\\\");\\r\\n        require(!userQuizAttempts[fid][quizId].rewardClaimed, \\\"Reward already claimed\\\");\\r\\n\\r\\n        // Check if the caller is the owner or the user associated with the fid\\r\\n        require(msg.sender == owner() || msg.sender == userData[fid].userAddress, \\\"Unauthorized claim\\\");\\r\\n\\r\\n        // Define the reward amount (replace this with your reward calculation logic)\\r\\n        uint256 rewardAmount = _calculateReward(fid, quizId);\\r\\n\\r\\n\\r\\n        // Transfer tokens to the recipient\\r\\n        _transferTokens(recipient, rewardAmount);\\r\\n\\r\\n        // Mark the reward as claimed\\r\\n        userQuizAttempts[fid][quizId].rewardClaimed = true;\\r\\n\\r\\n        emit RewardClaimed(fid, quizId, rewardAmount);\\r\\n    }\\r\\n\\r\\n\\r\\n    /**\\r\\n     * @dev Calculates the reward amount for a user.\\r\\n     * @param fid Identifier of the user.\\r\\n     * @param quizId Identifier of the quiz.\\r\\n     * @return The reward amount.\\r\\n     */\\r\\n    function _calculateReward(uint256 fid, bytes32 quizId) internal view returns (uint256) {\\r\\n        // Get the quiz attempt\\r\\n        QuizAttempt storage attempt = userQuizAttempts[fid][quizId];\\r\\n        uint256 startTime = attempt.startTime;\\r\\n        uint256 completionTime = attempt.completionTime;\\r\\n        uint256 score = attempt.score;\\r\\n\\r\\n        // Calculate the duration of the quiz attempt\\r\\n        uint256 duration = completionTime - startTime;\\r\\n\\r\\n        // Define constants for reward calculation\\r\\n        uint256 maxDuration = 3600; // Maximum duration allowed (in seconds)\\r\\n        uint256 maxScore = 100; // Maximum score possible\\r\\n        uint256 baseReward = 10; // Base reward amount\\r\\n\\r\\n        // Calculate the reward based on duration and score\\r\\n        uint256 rewardAmount = baseReward;\\r\\n\\r\\n        if (duration < maxDuration) {\\r\\n            // If the duration is less than the maximum allowed duration, adjust the reward\\r\\n            rewardAmount *= (maxDuration - duration) / maxDuration;\\r\\n        }\\r\\n\\r\\n        // Adjust reward based on score\\r\\n        rewardAmount *= score / maxScore;\\r\\n\\r\\n        // Ensure reward amount is within bounds (optional)\\r\\n        rewardAmount = rewardAmount < baseReward ? baseReward : rewardAmount;\\r\\n\\r\\n        return rewardAmount;\\r\\n    }\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n     /**\\r\\n     * @dev Transfers tokens to a specified recipient.\\r\\n     * @param recipient Address of the recipient.\\r\\n     * @param amount Amount of tokens to transfer.\\r\\n     */\\r\\n    function _transferTokens(address recipient, uint256 amount) internal {\\r\\n        require(tokenAddress != address(0), \\\"Token address not set\\\");\\r\\n        require(quizToken.balanceOf(address(this)) >= amount, \\\"Insufficient balance\\\");\\r\\n        // Prepare the call data for the token transfer\\r\\n        bytes memory data = abi.encodeWithSignature(\\\"transfer(address,uint256)\\\", recipient, amount);\\r\\n\\r\\n        // Make the call to the token contract\\r\\n        (bool success, ) = address(quizToken).call(data);\\r\\n        require(success, \\\"Token transfer failed\\\");\\r\\n    }\\r\\n\\r\\n\\r\\n\\r\\n    /**\\r\\n     * @dev Function to retrieve user data.\\r\\n     * @param fid Identifier of the user.\\r\\n     * @return userAddress Address of the user.\\r\\n     * @return score Score of the user.\\r\\n     */\\r\\n    // Function to retrieve user data for a given FID\\r\\n    function getUserData(uint256 fid) external view returns (address, uint256) {\\r\\n        return (userData[fid].userAddress, userData[fid].score);\\r\\n    }\\r\\n\\t\\r\\n\\r\\n\\r\\n    \\r\\n    /**\\r\\n     * @dev Function to update user data.\\r\\n     * @param fid Identifier of the user.\\r\\n     * @param userAddress Address of the user.\\r\\n     */\\r\\n    function updateUserData(uint256 fid, address userAddress) external onlyOwner {\\r\\n        // Retrieve the existing user data\\r\\n        UserData storage user = userData[fid];\\r\\n\\r\\n        // Update user data with the new address\\r\\n        user.userAddress = userAddress;\\r\\n\\r\\n        emit UserDataUpdated(fid, userAddress);\\r\\n    }\\r\\n\\r\\n\\r\\n\\r\\n\\t// Function to update user data\\r\\n    function _updateUserData(uint256 fid, address userAddress, uint256 score) internal {\\r\\n        // Update user data in the mapping\\r\\n        userData[fid] = UserData(userAddress, score);\\r\\n       \\r\\n        emit UserDataUpdated(fid, userAddress);\\r\\n    }\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n    function _getQuiz(bytes32 quizId) private view returns (Quiz memory) {\\r\\n        return quizzes[quizId];\\r\\n    }\\r\\n\\r\\n\\r\\n\\r\\n\\r\\n\\t/**\\r\\n\\t * Function that allows the contract to receive ETH\\r\\n\\t */\\r\\n\\treceive() external payable {}\\r\\n}\\r\\n\",\"keccak256\":\"0x86af27c7c698c95aa47673d29626febf74c9d70d1abdb27914d821a10b266e9b\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b506040516116cf3803806116cf83398101604081905261002f916100b7565b61003833610067565b600280546001600160a01b039092166001600160a01b03199283168117909155600180549092161790556100e7565b600080546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b6000602082840312156100c957600080fd5b81516001600160a01b03811681146100e057600080fd5b9392505050565b6115d9806100f66000396000f3fe6080604052600436106100a05760003560e01c806381bb6d4b1161006457806381bb6d4b146101b15780638da5cb5b146101d15780638f892157146101f95780639781f81e14610219578063c6d32e2c14610239578063f2fde38b1461025957600080fd5b80631fef580c146100ac57806333f159d01461010f57806354a7128a1461013d57806355e06d831461016a578063715018a61461019a57600080fd5b366100a757005b600080fd5b3480156100b857600080fd5b506100eb6100c73660046110e3565b600090815260056020526040902080546001909101546001600160a01b0390911691565b604080516001600160a01b0390931683526020830191909152015b60405180910390f35b34801561011b57600080fd5b5061012f61012a366004611112565b610279565b604051908152602001610106565b34801561014957600080fd5b5061015d6101583660046111c7565b6103a1565b604051610106919061120d565b34801561017657600080fd5b5061018a610185366004611267565b61056f565b6040519015158152602001610106565b3480156101a657600080fd5b506101af610725565b005b3480156101bd57600080fd5b506101af6101cc3660046111c7565b610739565b3480156101dd57600080fd5b506000546040516001600160a01b039091168152602001610106565b34801561020557600080fd5b5061012f6102143660046110e3565b61087a565b34801561022557600080fd5b506101af6102343660046112af565b610984565b34801561024557600080fd5b506101af6102543660046112e4565b610b4b565b34801561026557600080fd5b506101af610274366004611310565b610bac565b6000600a8211801561028c575060648211155b6102dd5760405162461bcd60e51b815260206004820152601c60248201527f496e76616c6964207468726573686f6c642070657263656e746167650000000060448201526064015b60405180910390fd5b8282336040516020016102f293929190611332565b60408051601f198184030181528282528051602091820120606084018352868452838201869052338484015260008181526004909252919020825191935090819061033d90826113f4565b5060208201516001820155604091820151600290910180546001600160a01b0319166001600160a01b0390921691909117905551339082907f0dc171d64f02db726d136b17b3dffcfbe8be27a977acf08fc34d1d8f4ad0066690600090a392915050565b6103ce6040518060600160405280606081526020016000815260200160006001600160a01b031681525090565b600082815260046020526040902080546103e79061136b565b90506000036104295760405162461bcd60e51b815260206004820152600e60248201526d125b9d985b1a59081c5d5a5e925960921b60448201526064016102d4565b6000838152600560205260409020546001600160a01b03166104515761045183600080610c25565b600083815260036020908152604080832085845290915281205460ff16600281111561047f5761047f6114b4565b146104da5760405162461bcd60e51b815260206004820152602560248201527f5175697a20616c726561647920696e2070726f6772657373206f7220636f6d706044820152641b195d195960da1b60648201526084016102d4565b60008381526006602090815260408220805460018101825590835291200182905561050482610ca1565b6000848152600360209081526040808320868452825291829020805460ff1916600117815542600290910181905582519081529151929350849286927f1db1cc550a1625237c7770fac57b0576ebfba720e335855f9291568dabd04e8b92908290030190a392915050565b6000610579610d9c565b6001600085815260036020908152604080832087845290915290205460ff1660028111156105a9576105a96114b4565b146105e95760405162461bcd60e51b815260206004820152601060248201526f145d5a5e881b9bdd081cdd185c9d195960821b60448201526064016102d4565b600084815260036020908152604080832086845290915281209060056106108560646114e0565b61061a91906114f7565b600483015490915060009062010000900460ff161561065157600a6106408360076114e0565b61064a91906114f7565b9050610654565b50805b605081106106845760008781526003602090815260408083208984529091529020600401805460ff191660011790555b600061068f8861087a565b6000898152600560209081526040918290206001908101849055875460ff191660021788558701859055426003880181905582518681529182015291925088918a917f8e27c355c101631912fb84bb62cbd0f15c5c7416bea88bab24fbe4735268c274910160405180910390a3505050600094855250506003602090815260408085209385529290525090206004015460ff1690565b61072d610d9c565b6107376000610df6565b565b6001600083815260036020908152604080832085845290915290205460ff166002811115610769576107696114b4565b14806107a257506002600083815260036020908152604080832085845290915290205460ff1660028111156107a0576107a06114b4565b145b6107e15760405162461bcd60e51b815260206004820152601060248201526f145d5a5e881b9bdd0814dd185c9d195960821b60448201526064016102d4565b600082815260036020908152604080832084845290915290206004015462010000900460ff161561084d5760405162461bcd60e51b8152602060048201526016602482015275145d5a5e88185b1c9958591e481c995cdd185c9d195960521b60448201526064016102d4565b60009182526003602090815260408084209284529190529020600401805462ff0000191662010000179055565b600081815260066020526040812054819081906108989060646114e0565b905060005b6000858152600660205260409020548110156109535760008581526006602052604081208054839081106108d3576108d3611519565b60009182526020909120015490506002600087815260036020908152604080832085845290915290205460ff166002811115610911576109116114b4565b0361094057600086815260036020908152604080832084845290915290206001015461093d908561152f565b93505b508061094b81611542565b91505061089d565b5080600003610966575060009392505050565b806109728360646114e0565b61097c91906114f7565b949350505050565b600083815260036020908152604080832085845290915290206004015460ff166109f05760405162461bcd60e51b815260206004820152601760248201527f4e6f7420656c696769626c6520666f722072657761726400000000000000000060448201526064016102d4565b6000838152600360209081526040808320858452909152902060040154610100900460ff1615610a5b5760405162461bcd60e51b815260206004820152601660248201527514995dd85c9908185b1c9958591e4818db185a5b595960521b60448201526064016102d4565b6000546001600160a01b0316331480610a8a57506000838152600560205260409020546001600160a01b031633145b610acb5760405162461bcd60e51b8152602060048201526012602482015271556e617574686f72697a656420636c61696d60701b60448201526064016102d4565b6000610ad78484610e46565b9050610ae38282610ee6565b6000848152600360209081526040808320868452825291829020600401805461ff001916610100179055815185815290810183905285917f59e1733196037919c757919aca3893d4624ebbea78a075ac7f0460aaa5277b03910160405180910390a250505050565b610b53610d9c565b60008281526005602052604080822080546001600160a01b0319166001600160a01b03851690811782559151909285917f0977de286bff160ea2e067a717ea7e46754a77110648bebd1583edd9496d50a69190a3505050565b610bb4610d9c565b6001600160a01b038116610c195760405162461bcd60e51b815260206004820152602660248201527f4f776e61626c653a206e6577206f776e657220697320746865207a65726f206160448201526564647265737360d01b60648201526084016102d4565b610c2281610df6565b50565b6040805180820182526001600160a01b03848116808352602080840186815260008981526005909252858220945185546001600160a01b031916941693909317845591516001909301929092559151909185917f0977de286bff160ea2e067a717ea7e46754a77110648bebd1583edd9496d50a69190a3505050565b610cce6040518060600160405280606081526020016000815260200160006001600160a01b031681525090565b60008281526004602052604090819020815160608101909252805482908290610cf69061136b565b80601f0160208091040260200160405190810160405280929190818152602001828054610d229061136b565b8015610d6f5780601f10610d4457610100808354040283529160200191610d6f565b820191906000526020600020905b815481529060010190602001808311610d5257829003601f168201915b5050509183525050600182015460208201526002909101546001600160a01b031660409091015292915050565b6000546001600160a01b031633146107375760405162461bcd60e51b815260206004820181905260248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e657260448201526064016102d4565b600080546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b60008281526003602081815260408084208585529091528220600281015491810154600182015491929184610e7b848461155b565b9050610e106064600a8083851015610eaf5783610e98868261155b565b610ea291906114f7565b610eac90826114e0565b90505b610eb983876114f7565b610ec390826114e0565b9050818110610ed25780610ed4565b815b99505050505050505050505b92915050565b6002546001600160a01b0316610f365760405162461bcd60e51b8152602060048201526015602482015274151bdad95b881859191c995cdcc81b9bdd081cd95d605a1b60448201526064016102d4565b6001546040516370a0823160e01b815230600482015282916001600160a01b0316906370a0823190602401602060405180830381865afa158015610f7e573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610fa2919061156e565b1015610fe75760405162461bcd60e51b8152602060048201526014602482015273496e73756666696369656e742062616c616e636560601b60448201526064016102d4565b6040516001600160a01b03831660248201526044810182905260009060640160408051601f198184030181529181526020820180516001600160e01b031663a9059cbb60e01b17905260015490519192506000916001600160a01b0390911690611052908490611587565b6000604051808303816000865af19150503d806000811461108f576040519150601f19603f3d011682016040523d82523d6000602084013e611094565b606091505b50509050806110dd5760405162461bcd60e51b8152602060048201526015602482015274151bdad95b881d1c985b9cd9995c8819985a5b1959605a1b60448201526064016102d4565b50505050565b6000602082840312156110f557600080fd5b5035919050565b634e487b7160e01b600052604160045260246000fd5b6000806040838503121561112557600080fd5b823567ffffffffffffffff8082111561113d57600080fd5b818501915085601f83011261115157600080fd5b813581811115611163576111636110fc565b604051601f8201601f19908116603f0116810190838211818310171561118b5761118b6110fc565b816040528281528860208487010111156111a457600080fd5b826020860160208301376000602093820184015298969091013596505050505050565b600080604083850312156111da57600080fd5b50508035926020909101359150565b60005b838110156112045781810151838201526020016111ec565b50506000910152565b60208152600082516060602084015280518060808501526112358160a08601602085016111e9565b6020850151604085810191909152909401516001600160a01b03166060840152505060a0601f909201601f1916010190565b60008060006060848603121561127c57600080fd5b505081359360208301359350604090920135919050565b80356001600160a01b03811681146112aa57600080fd5b919050565b6000806000606084860312156112c457600080fd5b83359250602084013591506112db60408501611293565b90509250925092565b600080604083850312156112f757600080fd5b8235915061130760208401611293565b90509250929050565b60006020828403121561132257600080fd5b61132b82611293565b9392505050565b600084516113448184602089016111e9565b919091019283525060601b6bffffffffffffffffffffffff19166020820152603401919050565b600181811c9082168061137f57607f821691505b60208210810361139f57634e487b7160e01b600052602260045260246000fd5b50919050565b601f8211156113ef57600081815260208120601f850160051c810160208610156113cc5750805b601f850160051c820191505b818110156113eb578281556001016113d8565b5050505b505050565b815167ffffffffffffffff81111561140e5761140e6110fc565b6114228161141c845461136b565b846113a5565b602080601f831160018114611457576000841561143f5750858301515b600019600386901b1c1916600185901b1785556113eb565b600085815260208120601f198616915b8281101561148657888601518255948401946001909101908401611467565b50858210156114a45787850151600019600388901b60f8161c191681555b5050505050600190811b01905550565b634e487b7160e01b600052602160045260246000fd5b634e487b7160e01b600052601160045260246000fd5b8082028115828204841417610ee057610ee06114ca565b60008261151457634e487b7160e01b600052601260045260246000fd5b500490565b634e487b7160e01b600052603260045260246000fd5b80820180821115610ee057610ee06114ca565b600060018201611554576115546114ca565b5060010190565b81810381811115610ee057610ee06114ca565b60006020828403121561158057600080fd5b5051919050565b600082516115998184602087016111e9565b919091019291505056fea2646970667358221220fc17af3faf880a09053bdf1b1dc03676debff7f2121bfaeb0dab2a3105b7010264736f6c63430008110033",
+  "deployedBytecode": "0x6080604052600436106100a05760003560e01c806381bb6d4b1161006457806381bb6d4b146101b15780638da5cb5b146101d15780638f892157146101f95780639781f81e14610219578063c6d32e2c14610239578063f2fde38b1461025957600080fd5b80631fef580c146100ac57806333f159d01461010f57806354a7128a1461013d57806355e06d831461016a578063715018a61461019a57600080fd5b366100a757005b600080fd5b3480156100b857600080fd5b506100eb6100c73660046110e3565b600090815260056020526040902080546001909101546001600160a01b0390911691565b604080516001600160a01b0390931683526020830191909152015b60405180910390f35b34801561011b57600080fd5b5061012f61012a366004611112565b610279565b604051908152602001610106565b34801561014957600080fd5b5061015d6101583660046111c7565b6103a1565b604051610106919061120d565b34801561017657600080fd5b5061018a610185366004611267565b61056f565b6040519015158152602001610106565b3480156101a657600080fd5b506101af610725565b005b3480156101bd57600080fd5b506101af6101cc3660046111c7565b610739565b3480156101dd57600080fd5b506000546040516001600160a01b039091168152602001610106565b34801561020557600080fd5b5061012f6102143660046110e3565b61087a565b34801561022557600080fd5b506101af6102343660046112af565b610984565b34801561024557600080fd5b506101af6102543660046112e4565b610b4b565b34801561026557600080fd5b506101af610274366004611310565b610bac565b6000600a8211801561028c575060648211155b6102dd5760405162461bcd60e51b815260206004820152601c60248201527f496e76616c6964207468726573686f6c642070657263656e746167650000000060448201526064015b60405180910390fd5b8282336040516020016102f293929190611332565b60408051601f198184030181528282528051602091820120606084018352868452838201869052338484015260008181526004909252919020825191935090819061033d90826113f4565b5060208201516001820155604091820151600290910180546001600160a01b0319166001600160a01b0390921691909117905551339082907f0dc171d64f02db726d136b17b3dffcfbe8be27a977acf08fc34d1d8f4ad0066690600090a392915050565b6103ce6040518060600160405280606081526020016000815260200160006001600160a01b031681525090565b600082815260046020526040902080546103e79061136b565b90506000036104295760405162461bcd60e51b815260206004820152600e60248201526d125b9d985b1a59081c5d5a5e925960921b60448201526064016102d4565b6000838152600560205260409020546001600160a01b03166104515761045183600080610c25565b600083815260036020908152604080832085845290915281205460ff16600281111561047f5761047f6114b4565b146104da5760405162461bcd60e51b815260206004820152602560248201527f5175697a20616c726561647920696e2070726f6772657373206f7220636f6d706044820152641b195d195960da1b60648201526084016102d4565b60008381526006602090815260408220805460018101825590835291200182905561050482610ca1565b6000848152600360209081526040808320868452825291829020805460ff1916600117815542600290910181905582519081529151929350849286927f1db1cc550a1625237c7770fac57b0576ebfba720e335855f9291568dabd04e8b92908290030190a392915050565b6000610579610d9c565b6001600085815260036020908152604080832087845290915290205460ff1660028111156105a9576105a96114b4565b146105e95760405162461bcd60e51b815260206004820152601060248201526f145d5a5e881b9bdd081cdd185c9d195960821b60448201526064016102d4565b600084815260036020908152604080832086845290915281209060056106108560646114e0565b61061a91906114f7565b600483015490915060009062010000900460ff161561065157600a6106408360076114e0565b61064a91906114f7565b9050610654565b50805b605081106106845760008781526003602090815260408083208984529091529020600401805460ff191660011790555b600061068f8861087a565b6000898152600560209081526040918290206001908101849055875460ff191660021788558701859055426003880181905582518681529182015291925088918a917f8e27c355c101631912fb84bb62cbd0f15c5c7416bea88bab24fbe4735268c274910160405180910390a3505050600094855250506003602090815260408085209385529290525090206004015460ff1690565b61072d610d9c565b6107376000610df6565b565b6001600083815260036020908152604080832085845290915290205460ff166002811115610769576107696114b4565b14806107a257506002600083815260036020908152604080832085845290915290205460ff1660028111156107a0576107a06114b4565b145b6107e15760405162461bcd60e51b815260206004820152601060248201526f145d5a5e881b9bdd0814dd185c9d195960821b60448201526064016102d4565b600082815260036020908152604080832084845290915290206004015462010000900460ff161561084d5760405162461bcd60e51b8152602060048201526016602482015275145d5a5e88185b1c9958591e481c995cdd185c9d195960521b60448201526064016102d4565b60009182526003602090815260408084209284529190529020600401805462ff0000191662010000179055565b600081815260066020526040812054819081906108989060646114e0565b905060005b6000858152600660205260409020548110156109535760008581526006602052604081208054839081106108d3576108d3611519565b60009182526020909120015490506002600087815260036020908152604080832085845290915290205460ff166002811115610911576109116114b4565b0361094057600086815260036020908152604080832084845290915290206001015461093d908561152f565b93505b508061094b81611542565b91505061089d565b5080600003610966575060009392505050565b806109728360646114e0565b61097c91906114f7565b949350505050565b600083815260036020908152604080832085845290915290206004015460ff166109f05760405162461bcd60e51b815260206004820152601760248201527f4e6f7420656c696769626c6520666f722072657761726400000000000000000060448201526064016102d4565b6000838152600360209081526040808320858452909152902060040154610100900460ff1615610a5b5760405162461bcd60e51b815260206004820152601660248201527514995dd85c9908185b1c9958591e4818db185a5b595960521b60448201526064016102d4565b6000546001600160a01b0316331480610a8a57506000838152600560205260409020546001600160a01b031633145b610acb5760405162461bcd60e51b8152602060048201526012602482015271556e617574686f72697a656420636c61696d60701b60448201526064016102d4565b6000610ad78484610e46565b9050610ae38282610ee6565b6000848152600360209081526040808320868452825291829020600401805461ff001916610100179055815185815290810183905285917f59e1733196037919c757919aca3893d4624ebbea78a075ac7f0460aaa5277b03910160405180910390a250505050565b610b53610d9c565b60008281526005602052604080822080546001600160a01b0319166001600160a01b03851690811782559151909285917f0977de286bff160ea2e067a717ea7e46754a77110648bebd1583edd9496d50a69190a3505050565b610bb4610d9c565b6001600160a01b038116610c195760405162461bcd60e51b815260206004820152602660248201527f4f776e61626c653a206e6577206f776e657220697320746865207a65726f206160448201526564647265737360d01b60648201526084016102d4565b610c2281610df6565b50565b6040805180820182526001600160a01b03848116808352602080840186815260008981526005909252858220945185546001600160a01b031916941693909317845591516001909301929092559151909185917f0977de286bff160ea2e067a717ea7e46754a77110648bebd1583edd9496d50a69190a3505050565b610cce6040518060600160405280606081526020016000815260200160006001600160a01b031681525090565b60008281526004602052604090819020815160608101909252805482908290610cf69061136b565b80601f0160208091040260200160405190810160405280929190818152602001828054610d229061136b565b8015610d6f5780601f10610d4457610100808354040283529160200191610d6f565b820191906000526020600020905b815481529060010190602001808311610d5257829003601f168201915b5050509183525050600182015460208201526002909101546001600160a01b031660409091015292915050565b6000546001600160a01b031633146107375760405162461bcd60e51b815260206004820181905260248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e657260448201526064016102d4565b600080546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b60008281526003602081815260408084208585529091528220600281015491810154600182015491929184610e7b848461155b565b9050610e106064600a8083851015610eaf5783610e98868261155b565b610ea291906114f7565b610eac90826114e0565b90505b610eb983876114f7565b610ec390826114e0565b9050818110610ed25780610ed4565b815b99505050505050505050505b92915050565b6002546001600160a01b0316610f365760405162461bcd60e51b8152602060048201526015602482015274151bdad95b881859191c995cdcc81b9bdd081cd95d605a1b60448201526064016102d4565b6001546040516370a0823160e01b815230600482015282916001600160a01b0316906370a0823190602401602060405180830381865afa158015610f7e573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610fa2919061156e565b1015610fe75760405162461bcd60e51b8152602060048201526014602482015273496e73756666696369656e742062616c616e636560601b60448201526064016102d4565b6040516001600160a01b03831660248201526044810182905260009060640160408051601f198184030181529181526020820180516001600160e01b031663a9059cbb60e01b17905260015490519192506000916001600160a01b0390911690611052908490611587565b6000604051808303816000865af19150503d806000811461108f576040519150601f19603f3d011682016040523d82523d6000602084013e611094565b606091505b50509050806110dd5760405162461bcd60e51b8152602060048201526015602482015274151bdad95b881d1c985b9cd9995c8819985a5b1959605a1b60448201526064016102d4565b50505050565b6000602082840312156110f557600080fd5b5035919050565b634e487b7160e01b600052604160045260246000fd5b6000806040838503121561112557600080fd5b823567ffffffffffffffff8082111561113d57600080fd5b818501915085601f83011261115157600080fd5b813581811115611163576111636110fc565b604051601f8201601f19908116603f0116810190838211818310171561118b5761118b6110fc565b816040528281528860208487010111156111a457600080fd5b826020860160208301376000602093820184015298969091013596505050505050565b600080604083850312156111da57600080fd5b50508035926020909101359150565b60005b838110156112045781810151838201526020016111ec565b50506000910152565b60208152600082516060602084015280518060808501526112358160a08601602085016111e9565b6020850151604085810191909152909401516001600160a01b03166060840152505060a0601f909201601f1916010190565b60008060006060848603121561127c57600080fd5b505081359360208301359350604090920135919050565b80356001600160a01b03811681146112aa57600080fd5b919050565b6000806000606084860312156112c457600080fd5b83359250602084013591506112db60408501611293565b90509250925092565b600080604083850312156112f757600080fd5b8235915061130760208401611293565b90509250929050565b60006020828403121561132257600080fd5b61132b82611293565b9392505050565b600084516113448184602089016111e9565b919091019283525060601b6bffffffffffffffffffffffff19166020820152603401919050565b600181811c9082168061137f57607f821691505b60208210810361139f57634e487b7160e01b600052602260045260246000fd5b50919050565b601f8211156113ef57600081815260208120601f850160051c810160208610156113cc5750805b601f850160051c820191505b818110156113eb578281556001016113d8565b5050505b505050565b815167ffffffffffffffff81111561140e5761140e6110fc565b6114228161141c845461136b565b846113a5565b602080601f831160018114611457576000841561143f5750858301515b600019600386901b1c1916600185901b1785556113eb565b600085815260208120601f198616915b8281101561148657888601518255948401946001909101908401611467565b50858210156114a45787850151600019600388901b60f8161c191681555b5050505050600190811b01905550565b634e487b7160e01b600052602160045260246000fd5b634e487b7160e01b600052601160045260246000fd5b8082028115828204841417610ee057610ee06114ca565b60008261151457634e487b7160e01b600052601260045260246000fd5b500490565b634e487b7160e01b600052603260045260246000fd5b80820180821115610ee057610ee06114ca565b600060018201611554576115546114ca565b5060010190565b81810381811115610ee057610ee06114ca565b60006020828403121561158057600080fd5b5051919050565b600082516115998184602087016111e9565b919091019291505056fea2646970667358221220fc17af3faf880a09053bdf1b1dc03676debff7f2121bfaeb0dab2a3105b7010264736f6c63430008110033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {
+      "calculateCumulativeScore(uint256)": {
+        "details": "Calculates the cumulative score of a user.",
+        "params": {
+          "fid": "Identifier of the user."
+        },
+        "returns": {
+          "_0": "The cumulative score."
+        }
+      },
+      "claimReward(uint256,bytes32,address)": {
+        "details": "Allows a user to claim their reward for completing a quiz.",
+        "params": {
+          "fid": "Identifier of the user.",
+          "quizId": "Identifier of the quiz.",
+          "recipient": "Address of the reward recipient."
+        }
+      },
+      "completeQuiz(uint256,bytes32,uint256)": {
+        "details": "Allows the owner to complete a quiz attempt.",
+        "params": {
+          "_fid": "Identifier of the user.",
+          "_quizId": "Identifier of the quiz.",
+          "_score": "Score obtained by the user."
+        },
+        "returns": {
+          "_0": "Whether the user is eligible for reward."
+        }
+      },
+      "constructor": {
+        "details": "Constructor function.",
+        "params": {
+          "_tokenAddress": "The address of the ERC20 token used for rewards."
+        }
+      },
+      "createQuiz(string,uint256)": {
+        "details": "Function to create a new quiz.",
+        "params": {
+          "_quizHash": "IPFS hash of the quiz content.",
+          "_threshold": "Reward threshold for the quiz."
+        },
+        "returns": {
+          "quizId": "Identifier of the newly created quiz."
+        }
+      },
+      "getUserData(uint256)": {
+        "details": "Function to retrieve user data.",
+        "params": {
+          "fid": "Identifier of the user."
+        },
+        "returns": {
+          "_0": "userAddress Address of the user.",
+          "_1": "score Score of the user."
+        }
+      },
+      "owner()": {
+        "details": "Returns the address of the current owner."
+      },
+      "renounceOwnership()": {
+        "details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
+      },
+      "restartQuiz(uint256,bytes32)": {
+        "details": "Allows a user to restart a quiz attempt.",
+        "params": {
+          "_fid": "Identifier of the user.",
+          "_quizId": "Identifier of the quiz."
+        }
+      },
+      "startQuiz(uint256,bytes32)": {
+        "details": "Function to start a quiz attempt.",
+        "params": {
+          "_fid": "Identifier of the user.",
+          "_quizId": "Identifier of the quiz."
+        },
+        "returns": {
+          "quiz": "Quiz details."
+        }
+      },
+      "transferOwnership(address)": {
+        "details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+      },
+      "updateUserData(uint256,address)": {
+        "details": "Function to update user data.",
+        "params": {
+          "fid": "Identifier of the user.",
+          "userAddress": "Address of the user."
+        }
+      }
+    },
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "notice": "A smart contract that allows users to create quizzes and earn rewards for completing them. It allows the owner to manage quizzes, quiz metadata, and user activities.",
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 7,
+        "contract": "contracts/Quizer.sol:Quizer",
+        "label": "_owner",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_address"
+      },
+      {
+        "astId": 2070,
+        "contract": "contracts/Quizer.sol:Quizer",
+        "label": "quizToken",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_contract(IERC20)777"
+      },
+      {
+        "astId": 2072,
+        "contract": "contracts/Quizer.sol:Quizer",
+        "label": "tokenAddress",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_address"
+      },
+      {
+        "astId": 2111,
+        "contract": "contracts/Quizer.sol:Quizer",
+        "label": "userQuizAttempts",
+        "offset": 0,
+        "slot": "3",
+        "type": "t_mapping(t_uint256,t_mapping(t_bytes32,t_struct(QuizAttempt)2100_storage))"
+      },
+      {
+        "astId": 2116,
+        "contract": "contracts/Quizer.sol:Quizer",
+        "label": "quizzes",
+        "offset": 0,
+        "slot": "4",
+        "type": "t_mapping(t_bytes32,t_struct(Quiz)2084_storage)"
+      },
+      {
+        "astId": 2121,
+        "contract": "contracts/Quizer.sol:Quizer",
+        "label": "userData",
+        "offset": 0,
+        "slot": "5",
+        "type": "t_mapping(t_uint256,t_struct(UserData)2077_storage)"
+      },
+      {
+        "astId": 2126,
+        "contract": "contracts/Quizer.sol:Quizer",
+        "label": "userQuizIds",
+        "offset": 0,
+        "slot": "6",
+        "type": "t_mapping(t_uint256,t_array(t_bytes32)dyn_storage)"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_array(t_bytes32)dyn_storage": {
+        "base": "t_bytes32",
+        "encoding": "dynamic_array",
+        "label": "bytes32[]",
+        "numberOfBytes": "32"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_bytes32": {
+        "encoding": "inplace",
+        "label": "bytes32",
+        "numberOfBytes": "32"
+      },
+      "t_contract(IERC20)777": {
+        "encoding": "inplace",
+        "label": "contract IERC20",
+        "numberOfBytes": "20"
+      },
+      "t_enum(QuizState)2104": {
+        "encoding": "inplace",
+        "label": "enum Quizer.QuizState",
+        "numberOfBytes": "1"
+      },
+      "t_mapping(t_bytes32,t_struct(Quiz)2084_storage)": {
+        "encoding": "mapping",
+        "key": "t_bytes32",
+        "label": "mapping(bytes32 => struct Quizer.Quiz)",
+        "numberOfBytes": "32",
+        "value": "t_struct(Quiz)2084_storage"
+      },
+      "t_mapping(t_bytes32,t_struct(QuizAttempt)2100_storage)": {
+        "encoding": "mapping",
+        "key": "t_bytes32",
+        "label": "mapping(bytes32 => struct Quizer.QuizAttempt)",
+        "numberOfBytes": "32",
+        "value": "t_struct(QuizAttempt)2100_storage"
+      },
+      "t_mapping(t_uint256,t_array(t_bytes32)dyn_storage)": {
+        "encoding": "mapping",
+        "key": "t_uint256",
+        "label": "mapping(uint256 => bytes32[])",
+        "numberOfBytes": "32",
+        "value": "t_array(t_bytes32)dyn_storage"
+      },
+      "t_mapping(t_uint256,t_mapping(t_bytes32,t_struct(QuizAttempt)2100_storage))": {
+        "encoding": "mapping",
+        "key": "t_uint256",
+        "label": "mapping(uint256 => mapping(bytes32 => struct Quizer.QuizAttempt))",
+        "numberOfBytes": "32",
+        "value": "t_mapping(t_bytes32,t_struct(QuizAttempt)2100_storage)"
+      },
+      "t_mapping(t_uint256,t_struct(UserData)2077_storage)": {
+        "encoding": "mapping",
+        "key": "t_uint256",
+        "label": "mapping(uint256 => struct Quizer.UserData)",
+        "numberOfBytes": "32",
+        "value": "t_struct(UserData)2077_storage"
+      },
+      "t_string_storage": {
+        "encoding": "bytes",
+        "label": "string",
+        "numberOfBytes": "32"
+      },
+      "t_struct(Quiz)2084_storage": {
+        "encoding": "inplace",
+        "label": "struct Quizer.Quiz",
+        "members": [
+          {
+            "astId": 2079,
+            "contract": "contracts/Quizer.sol:Quizer",
+            "label": "quizHash",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_string_storage"
+          },
+          {
+            "astId": 2081,
+            "contract": "contracts/Quizer.sol:Quizer",
+            "label": "threshold",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 2083,
+            "contract": "contracts/Quizer.sol:Quizer",
+            "label": "creator",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_address"
+          }
+        ],
+        "numberOfBytes": "96"
+      },
+      "t_struct(QuizAttempt)2100_storage": {
+        "encoding": "inplace",
+        "label": "struct Quizer.QuizAttempt",
+        "members": [
+          {
+            "astId": 2087,
+            "contract": "contracts/Quizer.sol:Quizer",
+            "label": "state",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_enum(QuizState)2104"
+          },
+          {
+            "astId": 2089,
+            "contract": "contracts/Quizer.sol:Quizer",
+            "label": "score",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 2091,
+            "contract": "contracts/Quizer.sol:Quizer",
+            "label": "startTime",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 2093,
+            "contract": "contracts/Quizer.sol:Quizer",
+            "label": "completionTime",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 2095,
+            "contract": "contracts/Quizer.sol:Quizer",
+            "label": "eligible",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_bool"
+          },
+          {
+            "astId": 2097,
+            "contract": "contracts/Quizer.sol:Quizer",
+            "label": "rewardClaimed",
+            "offset": 1,
+            "slot": "4",
+            "type": "t_bool"
+          },
+          {
+            "astId": 2099,
+            "contract": "contracts/Quizer.sol:Quizer",
+            "label": "restarted",
+            "offset": 2,
+            "slot": "4",
+            "type": "t_bool"
+          }
+        ],
+        "numberOfBytes": "160"
+      },
+      "t_struct(UserData)2077_storage": {
+        "encoding": "inplace",
+        "label": "struct Quizer.UserData",
+        "members": [
+          {
+            "astId": 2074,
+            "contract": "contracts/Quizer.sol:Quizer",
+            "label": "userAddress",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address"
+          },
+          {
+            "astId": 2076,
+            "contract": "contracts/Quizer.sol:Quizer",
+            "label": "score",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_uint256"
+          }
+        ],
+        "numberOfBytes": "64"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      }
+    }
+  }
+}
