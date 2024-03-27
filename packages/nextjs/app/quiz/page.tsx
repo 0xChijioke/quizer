@@ -4,12 +4,12 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { encrptData, pinDataWithPinata } from "./_components/data";
-import { usePrivy } from "@privy-io/react-auth";
 import type { NextPage } from "next";
 import { Address } from "~~/components/scaffold-eth";
 import { useScaffoldContractWrite, useScaffoldEventSubscriber } from "~~/hooks/scaffold-eth";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { getMetadata } from "~~/utils/scaffold-eth/getMetadata";
+import { useAccount } from "wagmi";
 
 
 const metadata = getMetadata({
@@ -18,20 +18,15 @@ const metadata = getMetadata({
 });
 
 const Home: NextPage = () => {
+  const {address} = useAccount();
   const router = useRouter();
-  const { ready, authenticated, user } = usePrivy();
   const apiUrl = process.env.NEXT_PUBLIC_VERCEL_URL
     ? `${process.env.NEXT_PUBLIC_VERCEL_URL}/api?hash=`
     : 'http://localhost:3000/api/dev?hash=';
 
     
 
-  useEffect(() => {
-    if (ready && !authenticated) {
-      router.push("/");
-    }
-  }, [ready, authenticated, router]);
-
+  
   const [questionNumber, setQuestionNumber] = useState(1);
   const [formData, setFormData] = useState({
     question: "",
@@ -207,7 +202,6 @@ const { writeAsync, isLoading, isMining } = useScaffoldContractWrite({
 
   return (
     <>
-      {ready && authenticated && user ? (
         <div className="flex items-center max-w-full flex-col pt-10">
           {/* <div className="absolute inset-0 bg-cover bg-center z-[-1] opacity-5" style={{ backgroundImage: "url('/bgi.jpg')", objectFit: "contain", opacity: 10 }}></div> */}
           
@@ -240,7 +234,7 @@ const { writeAsync, isLoading, isMining } = useScaffoldContractWrite({
             )}
             <div className="items-center p-3 bg-opacity-10 rounded-lg flex justify-center w-full bg-slate-400">
               <h1 className="text-lg font-bold gap-x-4 flex tracking-wide whitespace-nowrap text-right">
-              gm {user && (user.linkedAccounts[0].type === 'farcaster' && user.linkedAccounts[0].displayName) || (user.linkedAccounts[0].type === 'wallet' && <Address address={user.linkedAccounts[0].address} />)}
+              gm <Address address={address} />
               </h1>
             </div>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -316,7 +310,6 @@ const { writeAsync, isLoading, isMining } = useScaffoldContractWrite({
             </form>
           </div>
         </div>
-      ) : null}
     </>
   );
 };

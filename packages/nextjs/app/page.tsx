@@ -2,23 +2,16 @@
 
 import Head from "next/head";
 import Portal from "./_components/graphics/portal";
-import { usePrivy } from "@privy-io/react-auth";
 import type { NextPage } from "next";
+import { useAccount } from "wagmi";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 const Login: NextPage = () => {
-  const { login } = usePrivy();
-
-  
-  const { ready, authenticated } = usePrivy();
   const router = useRouter();
+  const { address, isConnected } = useAccount();
 
-  useEffect(() => {
-    if (ready && authenticated) {
-      router.push("/quiz");
-    }
-  }, [ready, authenticated, router]);
+  if (isConnected && address) router.push("/quiz")
+
 
   return (
     <>
@@ -33,9 +26,7 @@ const Login: NextPage = () => {
               <Portal style={{ maxWidth: "100%", height: "300px" }} />
             </div>
             <div className="mt-6 flex justify-center text-center">
-              <button className="bg-violet-600 hover:bg-violet-700 py-3 px-6 text-white rounded-lg" onClick={login}>
-                Log in
-              </button>
+             
             </div>
           </div>
         </div>
