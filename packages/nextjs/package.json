@@ -14,11 +14,16 @@
     "vercel:yolo": "vercel --build-env NEXT_PUBLIC_IGNORE_BUILD_ERROR=true"
   },
   "dependencies": {
+    "@alchemy/aa-accounts": "3.4.2",
+    "@alchemy/aa-alchemy": "3.4.2",
+    "@alchemy/aa-core": "3.4.2",
+    "@alchemy/aa-signers": "3.4.2",
     "@ethersproject/providers": "^5.7.2",
     "@heroicons/react": "^2.0.11",
     "@pinata/sdk": "^2.1.0",
-    "@privy-io/react-auth": "^1.59.5",
     "@rainbow-me/rainbowkit": "1.3.5",
+    "@tanstack/react-form": "^0.18.0",
+    "@tanstack/zod-form-adapter": "^0.18.0",
     "@uniswap/sdk-core": "^4.0.1",
     "@uniswap/v2-sdk": "^3.0.1",
     "blo": "^1.0.1",

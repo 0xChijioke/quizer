@@ -1,6 +1,8 @@
 //SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
+// Useful for debugging. Remove when deploying to a live network.
+import "hardhat/console.sol";
 
 // openzeppelin
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -73,10 +75,10 @@ contract Quizer is Ownable {
     event QuizCreated(bytes32 indexed quizId, address indexed creator);
 
     // Event to emit when a user requests to take a quiz
-    event QuizStarted(uint256 indexed fid, bytes32 indexed quizId, uint256 timestamp);
+    event QuizStarted(uint256 indexed fid, bytes32 indexed quizId, uint256 timestamp, string quizHash);
 
     // Event to emit when a user completes a quiz
-    event QuizCompleted(uint256 indexed fid, bytes32 indexed quizId, uint256 score, uint256 timestamp);
+    event QuizCompleted(uint256 indexed fid, bytes32 indexed quizId, uint256 score, uint256 timestamp, bool eligible);
 
 
     // Event to emit when a user completes a quiz and earns reward
@@ -111,12 +113,11 @@ contract Quizer is Ownable {
      * @dev Function to create a new quiz.
      * @param _quizHash IPFS hash of the quiz content.
      * @param _threshold Reward threshold for the quiz.
-     * @return quizId Identifier of the newly created quiz.
      */
-    function createQuiz(string memory _quizHash, uint256 _threshold) external returns (bytes32 quizId) {
+    function createQuiz(string memory _quizHash, uint256 _threshold) external {
         require(_threshold > 10 && _threshold <= 100, "Invalid threshold percentage");
         // Generate keccak256 hash of the IPFS hash
-        quizId = keccak256(abi.encodePacked(_quizHash, _threshold, msg.sender));
+        bytes32 quizId = keccak256(abi.encodePacked(_quizHash, _threshold, msg.sender));
 
         // Store hash in the mapping
         quizzes[quizId] = Quiz(_quizHash, _threshold, msg.sender);
@@ -133,9 +134,8 @@ contract Quizer is Ownable {
      * @dev Function to start a quiz attempt.
      * @param _fid Identifier of the user.
      * @param _quizId Identifier of the quiz.
-     * @return quiz Quiz details.
      */
-    function startQuiz(uint256 _fid, bytes32 _quizId) external  returns(Quiz memory quiz) {
+    function startQuiz(uint256 _fid, bytes32 _quizId) external {
         // Check if the quizId is valid
         require(bytes(quizzes[_quizId].quizHash).length != 0, "Invalid quizId");
 
@@ -155,13 +155,13 @@ contract Quizer is Ownable {
         userQuizIds[_fid].push(_quizId);
 
         // Get the quiz struct
-        quiz = _getQuiz(_quizId);
+        Quiz memory quiz = _getQuiz(_quizId);
 
 
         userQuizAttempts[_fid][_quizId].state = QuizState.InProgress;
         userQuizAttempts[_fid][_quizId].startTime = block.timestamp;
 
-        emit QuizStarted(_fid, _quizId, block.timestamp);
+        emit QuizStarted(_fid, _quizId, block.timestamp, quiz.quizHash);
 
     }
 
@@ -187,11 +187,10 @@ contract Quizer is Ownable {
      * @param _fid Identifier of the user.
      * @param _quizId Identifier of the quiz.
      * @param _score Score obtained by the user.
-     * @return Whether the user is eligible for reward.
      */
-    function completeQuiz(uint256 _fid, bytes32 _quizId, uint256 _score) external onlyOwner returns(bool) {
+    function completeQuiz(uint256 _fid, bytes32 _quizId, uint256 _score) external {
         // Check if the user has started the quiz
-        require(userQuizAttempts[_fid][_quizId].state == QuizState.InProgress, "Quiz not started");
+        // require(userQuizAttempts[_fid][_quizId].state == QuizState.InProgress, "Quiz not started");
 
         QuizAttempt storage attempt = userQuizAttempts[_fid][_quizId];
 
@@ -230,10 +229,8 @@ contract Quizer is Ownable {
 
 
         // Emit QuizCompleted event
-        emit QuizCompleted(_fid, _quizId, adjustedScore, block.timestamp);
+        emit QuizCompleted(_fid, _quizId, adjustedScore, block.timestamp, userQuizAttempts[_fid][_quizId].eligible);
 
-
-        return userQuizAttempts[_fid][_quizId].eligible;
     }
 
 
@@ -274,8 +271,8 @@ contract Quizer is Ownable {
      * @param recipient Address of the reward recipient.
      */
     function claimReward(uint256 fid, bytes32 quizId, address recipient) external {
-        require(userQuizAttempts[fid][quizId].eligible, "Not eligible for reward");
-        require(!userQuizAttempts[fid][quizId].rewardClaimed, "Reward already claimed");
+        // require(userQuizAttempts[fid][quizId].eligible, "Not eligible for reward");
+        // require(!userQuizAttempts[fid][quizId].rewardClaimed, "Reward already claimed");
 
         // Check if the caller is the owner or the user associated with the fid
         require(msg.sender == owner() || msg.sender == userData[fid].userAddress, "Unauthorized claim");
