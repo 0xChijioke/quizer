@@ -1,10 +1,8 @@
 const PINATA_API = process.env.PINATA_API_KEY;
 
 export async function getUser(fid: any) {
-  // Define the Pinata API endpoint
   const pinataAPI = `https://api.pinata.cloud/v3/farcaster/users/${fid}`;
 
-  // Define the request headers
   const headers = {
     Authorization: `Bearer ${PINATA_API}`,
   };

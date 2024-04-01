@@ -3,13 +3,14 @@ import axios from "axios";
 // Cached variable to hold questions
 let cachedQuestions: any[] | null = null;
 
+
 function readHashFromEnvironment() {
   return process.env.HASH_VALUE || null;
 }
 
 // Function to fetch and return questions by difficulty
 export const db = {
-  getQuestionsByDifficulty: async (difficulty: "Easy" | "Medium" | "Hard") => {
+  getQuestionsByDifficulty: async (difficulty: "Easy" | "Medium" | "Hard", requestedHash: any) => {
     try {
       // If questions are already cached, return them directly
       if (cachedQuestions && cachedQuestions.length > 0) {
@@ -19,16 +20,16 @@ export const db = {
         }
       }
 
-      // Read the stored hash from file
-      let storedHash = readHashFromEnvironment();
+      let hash;
 
-      // // If the stored hash is not valid, pin the questions to Pinata and save the new hash
-      // if (!storedHash) {
-      //   const hash = await pinQuestionsToPinata();
-      //   storedHash = hash; // Update storedHash after pinning
-      // }
-
-      const questions = storedHash && (await fetchQuestions(storedHash));
+      // // If requestedHash is provided, use it instead of the stored hash
+      if (requestedHash) {
+        hash = requestedHash;
+      } else {
+        hash = readHashFromEnvironment();
+      }
+;
+      const questions = hash && (await fetchQuestions(hash));
 
       // Cache the fetched questions only if questions are fetched
       if (questions) {
@@ -45,6 +46,7 @@ export const db = {
         question => question.difficulty.toLowerCase() === difficulty.toLowerCase(),
       );
 
+      // console.log("filteredQuestions", filteredQuestions);
       // Check if filteredQuestions is empty after filtering
       if (filteredQuestions.length === 0) {
         throw new Error("No questions found for the requested difficulty");

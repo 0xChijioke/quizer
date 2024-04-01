@@ -1,14 +1,16 @@
 /** @jsxImportSource frog/jsx */
 import { db } from "./db";
 import { Button, Frog } from "frog";
-import { pinata } from 'frog/hubs'
+// import { pinata } from 'frog/hubs'
 import { handle } from "frog/next";
 import { shuffle } from "lodash";
 import getClient from "~~/app/common/manager";
 import { getUser } from "~~/utils/getUser";
 import { startQuiz } from "~~/utils/startQuiz";
-
+import { claimRewards, completeQuiz } from "./contract";
 type State = {
+  user: string;
+  quizId: string;
   score: number;
   quizIndex: number;
   questions: any[];
@@ -17,27 +19,19 @@ type State = {
 const app = new Frog<{ State: State }>({
   assetsPath: "/",
   basePath: "/api",
-  hub: pinata(),
+  // Supply a Hub to enable frame verification.
+  // hub: pinata(),
+  // hubApiUrl: "https://api.hub.wevm.dev"
   initialState: {
+    user: "",
+    quizId: "",
     score: 0,
     quizIndex: 0,
     questions: [],
   },
 });
 
-
-
-// Middleware for authentication
-// const authenticate = async (c: any, next: () => Promise<TypedResponse<FrameResponse>>) => {
-//   const { req, res } = c;
-//   // Check if user is authenticated
-//   if (!req.user) {
-//     return res.status(401).json({ message: "Unauthorized" });
-//   }
-//   await next();
-// };
-
-
+let requestedHash: any;
 
 
 
@@ -67,40 +61,46 @@ app.frame("/", async c => {
   const { searchParams } = new URL(c.req.url);
   const hash = searchParams.get("hash");
 
+
+
   if (status === "response" && buttonValue?.startsWith('0x')) {
 
-  // Extract button value 
   const buttonValue = c.buttonValue;
 
-  // Ensure that button value 
   if (buttonValue) {
     // Retrieve the user's fid from frame data
     const fid = c.frameData?.fid;
+
+    // Derive new state based on previous state
+  const state = await c.deriveState(async previousState => {
+    // Fetch questions if not fetched previously
+    
+      previousState.quizId = buttonValue;
+      // console.log(previousState.questions)
+    
+  });
 
     // Check if fid exists
     if (fid) {
       // Fetch user information
       getUser(fid)
         .then(userInfo => {
-          if (userInfo) {
-            // User info successfully fetched
-            // console.log("User info:", userInfo);
+
+          // User info successfully fetched
+          console.log("User info:", userInfo);
+          state.user = userInfo?.verifiedAddress[0];
 
             // Start quiz with the retrieved hash
             getClient()
               .then(client => startQuiz(buttonValue, fid, client))
               .then(start => {
                 // Quiz started successfully
-                console.log(start);
+                requestedHash = start;
               })
               .catch(error => {
                 // Handle start quiz error
                 console.error("Error starting quiz:", error);
               });
-          } else {
-            // Failed to fetch user info
-            console.log("Failed to fetch user info");
-          }
         })
         .catch(error => {
           // Handle user info fetch error
@@ -159,7 +159,6 @@ app.frame("/", async c => {
 app.frame("/quiz", async c => {
   const { buttonValue, deriveState } = c;
 
-  console.log(c.frameData);
 
   // Derive new state based on previous state
   const state = await deriveState(async previousState => {
@@ -167,6 +166,7 @@ app.frame("/quiz", async c => {
     if (previousState.questions.length < 1) {
       previousState.questions = (await db.getQuestionsByDifficulty(
         buttonValue as "Easy" | "Medium" | "Hard",
+        requestedHash,
       )) as unknown as any[];
       // console.log(previousState.questions)
     }
@@ -181,9 +181,18 @@ app.frame("/quiz", async c => {
       const userScore = state.score;
       console.log("User score:", userScore);
 
-      // Check eligibility for rewards TODO: check by interacting with quizer smart contract
-      const isEligibleForRewards = userScore >= 4; // Example eligibility criteria
-
+      let isEligibleForRewards = false;
+      const fid = c.frameData?.fid;
+      if (fid) {
+        
+        getUser(fid)
+          .then(userInfo => {
+            completeQuiz(state.user, state.quizId, state.score)
+            claimRewards(fid, state.quizId, userInfo?.verifiedAddress);
+          });
+      }
+               
+            
       if (isEligibleForRewards) {
         // Record user score and eligibility for rewards in smart contract
         // Inform the user about rewards
@@ -202,7 +211,7 @@ app.frame("/quiz", async c => {
           image: (
             <Image
               content={[<div>{"Quiz Completed 🎉"}</div>, <div>{"Thank you for taking the quiz!"}</div>]}
-              options={{ color: "white", fontSize: 24, padding: "0 120px" }}
+              options={{ color: "white", fontSize: 54, padding: "0 120px" }}
             />
           ),
           intents: [<Button.Reset key={"reset"}>Restart</Button.Reset>],
@@ -269,3 +278,6 @@ app.frame("/quiz", async c => {
 
 export const GET = handle(app);
 export const POST = handle(app);
+
+
+export const dynamic = 'force-dynamic';

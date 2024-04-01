@@ -1,6 +1,7 @@
 import { log } from "console";
 import { createPublicClient, http } from "viem";
 import { hardhat } from "viem/chains";
+import getClient from "~~/app/common/manager";
 import deployedContracts from "~~/contracts/deployedContracts";
 
 export const publicClient = createPublicClient({
@@ -8,10 +9,13 @@ export const publicClient = createPublicClient({
     transport: http(),
 });
 
-const completeQuiz = async (user: any, quizId: string, score: number, client: any) => {
+
+const completeQuiz = async (user: any, quizId: string, score: number) => {
     try {
+
+        const client = await getClient();
         // Call the completeQuiz function
-        console.log("user", user, "quizId", quizId, "score", score, "client", client);
+        // console.log("user", user, "quizId", quizId, "score", score, "client", client);
         const { request } = await publicClient.simulateContract({
             address: deployedContracts[84532].Quizer.address,
             abi: deployedContracts[84532].Quizer.abi,
@@ -20,7 +24,7 @@ const completeQuiz = async (user: any, quizId: string, score: number, client: an
             account: client.account,
         });
         
-        console.log("request", request);
+        // console.log("request", request);
         const transactionHash = await client.writeContract(request);
         console.log("Quiz completed successfully with transaction hash:", transactionHash);
         return transactionHash;
@@ -30,9 +34,11 @@ const completeQuiz = async (user: any, quizId: string, score: number, client: an
     }
 };
 
-const claimRewards = async (user: any, quizId: string, client: any, address: string) => {
+const claimRewards = async (user: any, quizId: string, address: string) => {
     try {
+        const client = await getClient();
         // Call the claimReward function
+        console.log("user", user, "quizId", quizId, "client", client, "address", address);
         const { request } = await publicClient.simulateContract({
             address: deployedContracts[84532].Quizer.address,
             abi: deployedContracts[84532].Quizer.abi,
@@ -40,7 +46,7 @@ const claimRewards = async (user: any, quizId: string, client: any, address: str
             args: [user, quizId as any, address],
             account: client.account,
         });
-        console.log("request", request);
+        // console.log("request", request);
         
         const transactionHash = await client.writeContract(request);
 
