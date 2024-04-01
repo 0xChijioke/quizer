@@ -1,9 +1,9 @@
 "use client";
 
 // import { useAccount } from "wagmi";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { encrptData, pinDataWithPinata } from "./_components/data";
+import { pinDataWithPinata } from "./_components/data";
 import type { NextPage } from "next";
 import { Address } from "~~/components/scaffold-eth";
 import { useScaffoldContractWrite, useScaffoldEventSubscriber } from "~~/hooks/scaffold-eth";
@@ -40,171 +40,165 @@ const Home: NextPage = () => {
   const [threshold, setThreshold] = useState<bigint>(BigInt('80')); // set threshold to 80% for now
   
   const [loading, setLoading] = useState<boolean>(false);
-  const [quizId, setQuizId] = useState<string | null>(null);  
-  const [quiz, setQuiz] = useState<boolean>(false);  
+  const [quizId, setQuizId] = useState<string | null>(null);
   const [copied, setCopied] = useState<boolean>(false);
 
 
 
 
+
+
   
-const { writeAsync, isLoading, isMining } = useScaffoldContractWrite({
-  contractName: "Quizer",
-  functionName: "createQuiz",
-  args: [ipfshash, threshold],
-  blockConfirmations: 1,
-  onBlockConfirmation: txnReceipt => {
-    console.log("Transaction blockHash", txnReceipt.blockHash);
-  },
-});
-
-
-
-  useScaffoldEventSubscriber({
+  const { writeAsync, isLoading, isMining } = useScaffoldContractWrite({
     contractName: "Quizer",
-    eventName: "QuizCreated",
+    functionName: "createQuiz",
+    args: [ipfshash, threshold],
+    blockConfirmations: 1,
+    onBlockConfirmation: txnReceipt => {
+      console.log("Transaction blockHash", txnReceipt.blockHash);
+    },
+  });
+  
+  
+  
+    useScaffoldEventSubscriber({
+      contractName: "Quizer",
+      eventName: "QuizCreated",
+      
+      listener: logs => {
+        logs.map(log => {
+          const { quizId } = log.args;
+          console.log("📡 GreetingChange event", quizId);
+          quizId && setQuizId(quizId as any);
+        });
+      },
+    });
+  
+  
+  
+  
+    useScaffoldEventSubscriber({
+      contractName: "Quizer",
+      eventName: "QuizCompleted",
+  
+      listener: (logs): void => {
+        logs.map(log => {
+          const { fid, quizId, timestamp } = log.args;
+          console.log("📡 GreetingChange event", quizId, fid, timestamp);
+        });
+      },
+    });
     
-    listener: logs => {
-      logs.map(log => {
-        const { quizId } = log.args;
-        console.log("📡 GreetingChange event", quizId);
-        // Set the quiz ID after successfully creating the quiz
-        quizId && setQuizId(quizId);
-      });
-    },
-  });
-
-
-
-
-  useScaffoldEventSubscriber({
-    contractName: "Quizer",
-    eventName: "QuizCompleted",
-
-    listener: (logs): void => {
-      logs.map(log => {
-        const { fid, quizId, timestamp } = log.args;
-        console.log("📡 GreetingChange event", quizId, fid, timestamp);
-      });
-    },
-  });
   
-
-
-
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const handleOptionChange = (index: number, value: string) => {
-    setFormData(prevState => {
-      const newOptions = [...prevState.options];
-      newOptions[index] = value;
-      return {
+  
+  
+  
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      setFormData(prevState => ({
         ...prevState,
-        options: newOptions,
-      };
-    });
-  };
-
-  const handleEnterNextQuestion = () => {
-    if (
-      formData.question.trim() === "" ||
-      formData.options.length < 2 ||
-      formData.options.some(option => option.trim() === "")
-    ) {
-      alert("Please fill out the current question and provide at least two options.");
-      return; // Prevent navigating to next question if current question is incomplete
-    }
-
-    if (formData.options.length < 2 || formData.options.length > 4) {
-      alert("Please add between 2 to 4 options.");
-      return;
-    }
-
-    // Validate unique options
-    const uniqueOptions = new Set(formData.options);
-    if (uniqueOptions.size !== formData.options.length) {
-      alert("Options must be unique.");
-      return;
-    }
-
-    if (!formData.options.includes(formData.correctAnswer)) {
-      alert("The correct answer must be one of the options provided.");
-      return;
-    }
-    // Validated question
-    const validatedQuestion = {
-      question: formData.question,
-      options: formData.options,
-      correctAnswer: formData.correctAnswer,
-      difficulty: formData.difficulty,
+        [name]: value,
+      }));
     };
-
-    // Add validated question to quiz data
-    setQuizData(prevQuizData => [...prevQuizData, validatedQuestion]);
-
-    // Reset form data
-    setFormData({
-      question: "",
-      options: ["", ""],
-      correctAnswer: "",
-      difficulty: "Any",
-    });
-
-    // Increment question number
-    setQuestionNumber(prevQuestionNumber => prevQuestionNumber + 1);
-  };
-
-
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Validate and format the final submission
-    setLoading(true);
-    try {
-      // Encrypt the quiz data
-      const { encryptedData, iv } = await encrptData(quizData);
-
-      const ipfshash = await pinDataWithPinata(encryptedData, iv);
-
-      setIpfsHash(ipfshash);
-
-      // Call the startQuiz function in the smart contract
-      await writeAsync();
-
-      setQuiz(true);
-
-
+  
+    const handleOptionChange = (index: number, value: string) => {
+      setFormData(prevState => {
+        const newOptions = [...prevState.options];
+        newOptions[index] = value;
+        return {
+          ...prevState,
+          options: newOptions,
+        };
+      });
+    };
+  
+    const handleEnterNextQuestion = () => {
+      if (
+        formData.question.trim() === "" ||
+        formData.options.length < 2 ||
+        formData.options.some(option => option.trim() === "")
+      ) {
+        alert("Please fill out the current question and provide at least two options.");
+        return; // Prevent navigating to next question if current question is incomplete
+      }
+  
+      if (formData.options.length < 2 || formData.options.length > 4) {
+        alert("Please add between 2 to 4 options.");
+        return;
+      }
+  
+      // Validate unique options
+      const uniqueOptions = new Set(formData.options);
+      if (uniqueOptions.size !== formData.options.length) {
+        alert("Options must be unique.");
+        return;
+      }
+  
+      if (!formData.options.includes(formData.correctAnswer)) {
+        alert("The correct answer must be one of the options provided.");
+        return;
+      }
+      // Validated question
+      const validatedQuestion = {
+        question: formData.question,
+        options: formData.options,
+        correctAnswer: formData.correctAnswer,
+        difficulty: formData.difficulty,
+      };
+  
+      // Add validated question to quiz data
+      setQuizData(prevQuizData => [...prevQuizData, validatedQuestion]);
+  
+      // Reset form data
       setFormData({
         question: "",
         options: ["", ""],
         correctAnswer: "",
         difficulty: "Any",
       });
-      setQuestionNumber(1);
-
-
-    } catch (error) {
-      console.error("Error handling form submission:", error);
-      // Handle any errors that occur during form submission
-    } finally {
-      setLoading(false);
-    }
-  };
+  
+      // Increment question number
+      setQuestionNumber(prevQuestionNumber => prevQuestionNumber + 1);
+    };
+  
+  
+  
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      // Validate and format the final submission
+      setLoading(true);
+      try {
+  
+        const ipfshash = await pinDataWithPinata(quizData);
+  
+        setIpfsHash(ipfshash);
+  
+        // Call the startQuiz function in the smart contract
+        await writeAsync();
+  
+        setFormData({
+          question: "",
+          options: ["", ""],
+          correctAnswer: "",
+          difficulty: "Any",
+        });
+        setQuestionNumber(1);
+  
+  
+      } catch (error) {
+        console.error("Error handling form submission:", error);
+        // Handle any errors that occur during form submission
+      } finally {
+        setLoading(false);
+      }
+    };
+  
 
 
 
   return (
     <>
         <div className="flex items-center max-w-full flex-col pt-10">
-          {/* <div className="absolute inset-0 bg-cover bg-center z-[-1] opacity-5" style={{ backgroundImage: "url('/bgi.jpg')", objectFit: "contain", opacity: 10 }}></div> */}
-          
           <div className="flex flex-col items-center w-full card lg:w-[50%] bg-base-100 shadow-md shadow-secondary p-4 lg:p-8 justify-center">
             {quizId && (
               <dialog id="my_modal" className="modal" open>
@@ -296,7 +290,7 @@ const { writeAsync, isLoading, isMining } = useScaffoldContractWrite({
                 <button
                   type="button"
                   onClick={handleEnterNextQuestion}
-                  // disabled={formData.question.trim() === '' || formData.options.length < 2 || formData.options.some(option => option.trim() === '')}
+                  disabled={formData.question.trim() === '' || formData.options.length < 2 || formData.options.some(option => option.trim() === '')}
                   className="bg-indigo-800 text-white px-4 py-2 rounded"
                 >
                   Next Question

@@ -9,7 +9,7 @@ import { hardhat } from 'viem/chains';
 
 const getClient = async () => {
     try {
-        const privateKey = process.env.PRIVATE_KEY;
+        const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY;
 
         if (!privateKey) {
             throw new Error('Private key is missing');

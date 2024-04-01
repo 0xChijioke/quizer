@@ -311,7 +311,7 @@ const deployedContracts = {
       },
     },
     Quizer: {
-      address: "0x5B821A5fBb14d0D345F2e7017Ec58B8E26aabCEF",
+      address: "0xCd93c505DFc0A2BfC5F1441e26498a9eFE2A3525",
       abi: [
         {
           inputs: [
@@ -370,6 +370,12 @@ const deployedContracts = {
               name: "timestamp",
               type: "uint256",
             },
+            {
+              indexed: false,
+              internalType: "bool",
+              name: "eligible",
+              type: "bool",
+            },
           ],
           name: "QuizCompleted",
           type: "event",
@@ -413,6 +419,12 @@ const deployedContracts = {
               internalType: "uint256",
               name: "timestamp",
               type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "quizHash",
+              type: "string",
             },
           ],
           name: "QuizStarted",
@@ -548,13 +560,7 @@ const deployedContracts = {
             },
           ],
           name: "completeQuiz",
-          outputs: [
-            {
-              internalType: "bool",
-              name: "",
-              type: "bool",
-            },
-          ],
+          outputs: [],
           stateMutability: "nonpayable",
           type: "function",
         },
@@ -572,13 +578,7 @@ const deployedContracts = {
             },
           ],
           name: "createQuiz",
-          outputs: [
-            {
-              internalType: "bytes32",
-              name: "quizId",
-              type: "bytes32",
-            },
-          ],
+          outputs: [],
           stateMutability: "nonpayable",
           type: "function",
         },
@@ -658,30 +658,7 @@ const deployedContracts = {
             },
           ],
           name: "startQuiz",
-          outputs: [
-            {
-              components: [
-                {
-                  internalType: "string",
-                  name: "quizHash",
-                  type: "string",
-                },
-                {
-                  internalType: "uint256",
-                  name: "threshold",
-                  type: "uint256",
-                },
-                {
-                  internalType: "address",
-                  name: "creator",
-                  type: "address",
-                },
-              ],
-              internalType: "struct Quizer.Quiz",
-              name: "quiz",
-              type: "tuple",
-            },
-          ],
+          outputs: [],
           stateMutability: "nonpayable",
           type: "function",
         },

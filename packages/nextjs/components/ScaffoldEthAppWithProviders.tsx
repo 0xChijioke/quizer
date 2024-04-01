@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PrivyProvider } from "@privy-io/react-auth";
 import { RainbowKitProvider, darkTheme, lightTheme } from "@rainbow-me/rainbowkit";
 import { useTheme } from "next-themes";
 import { Toaster } from "react-hot-toast";
@@ -14,7 +13,16 @@ import { useNativeCurrencyPrice } from "~~/hooks/scaffold-eth";
 import { useGlobalState } from "~~/services/store/store";
 import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 import { appChains } from "~~/services/web3/wagmiConnectors";
-import { useRouter } from "next/navigation";
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
+// import { SignerContextProvider } from "~~/contexts/SignerContext";
+
+// const TurnkeyIframeContainerId = "turnkey-iframe-container-id";
+// const TurnkeyIframeElementId = "turnkey-iframe-element-id";
+
+
 
 const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
   const price = useNativeCurrencyPrice();
@@ -39,36 +47,46 @@ const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const ScaffoldEthAppWithProviders = ({ children }: { children: React.ReactNode }) => {
-  const router = useRouter();
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === "dark";
   const [mounted, setMounted] = useState(false);
+  const queryClient = new QueryClient()
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // const [clientConfig] = useState({
+  //   connection: {     
+  //     apiKey: process.env.ALCHEMY_ACCESS_KEY!,
+  //     rpcUrl: process.env.NEXT_PUBLIC_ALCHEMY_RPC!,
+  //   },
+  //   iframeConfig: {
+  //     iframeContainerId: TurnkeyIframeContainerId,
+  //     iframeElementId: TurnkeyIframeElementId,
+  //   },
+  // });
+
+
+
+
+
+
+
   return (
     <WagmiConfig config={wagmiConfig}>
       <ProgressBar />
-      <RainbowKitProvider
-        chains={appChains.chains}
-        avatar={BlockieAvatar}
-        theme={mounted ? (isDarkMode ? darkTheme() : lightTheme()) : lightTheme()}
-      >
-        <PrivyProvider
-          appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID!}
-          onSuccess={() => router.push('/quiz')}
-          config={{
-            appearance: {
-              theme: isDarkMode ? "dark" : "light",
-              logo: "./logo.png",
-            },
-          }}
-        >
-          <ScaffoldEthApp>{children}</ScaffoldEthApp>
-        </PrivyProvider>
-      </RainbowKitProvider>
+      <QueryClientProvider client={queryClient}>
+        {/* <SignerContextProvider client={clientConfig}> */}
+          <RainbowKitProvider
+            chains={appChains.chains}
+            avatar={BlockieAvatar}
+            theme={mounted ? (isDarkMode ? darkTheme() : lightTheme()) : lightTheme()}
+          >
+              <ScaffoldEthApp>{children}</ScaffoldEthApp>
+          </RainbowKitProvider>
+        {/* </SignerContextProvider> */}
+      </QueryClientProvider>
     </WagmiConfig>
   );
 };
