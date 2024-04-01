@@ -3,7 +3,7 @@
 
 import { privateKeyToAccount } from 'viem/accounts';
 import { createWalletClient, http } from 'viem';
-import { hardhat } from 'viem/chains';
+import { baseSepolia, hardhat } from 'viem/chains';
 
 
 
@@ -18,7 +18,7 @@ const getClient = async () => {
 
         const client = createWalletClient({
             account,
-            chain: hardhat,
+            chain: baseSepolia,
             transport: http()
         });
 

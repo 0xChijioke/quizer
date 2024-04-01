@@ -1,11 +1,11 @@
-import { log } from "console";
+
 import { createPublicClient, http } from "viem";
-import { hardhat } from "viem/chains";
+import { baseSepolia, hardhat } from "viem/chains";
 import getClient from "~~/app/common/manager";
 import deployedContracts from "~~/contracts/deployedContracts";
 
 export const publicClient = createPublicClient({
-    chain: hardhat,
+    chain: baseSepolia,
     transport: http(),
 });
 
