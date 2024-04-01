@@ -6,17 +6,27 @@
 
 
 Create a quiz:
+![image](https://github.com/0xChijioke/quizer/assets/53488449/e81129c3-d483-40e6-ab4d-7ca5d0e624d4)
+
+
 
 
 Copy and  share on a farcaster client:
+![image](https://github.com/0xChijioke/quizer/assets/53488449/5172428a-385d-4af7-9c78-98872522aefe)
+
 
 
 Take a quiz:
+![image](https://github.com/0xChijioke/quizer/assets/53488449/edd13e79-8cf7-49d6-a223-ae7dd8d7c781)
 
 
+TODO: Send tokens to quizzer if they are eligible.
+```
+function claimReward(uint256 fid, bytes32 quizId, address recipient) external
+```
 
-Get reward if elgible!
 
+If quiz creation fails or a quiz is cast with an arbitrary hash the frame defaults to a hardcoded hash in the env variables.
 
 
 ## Tech Stack 🛠️
