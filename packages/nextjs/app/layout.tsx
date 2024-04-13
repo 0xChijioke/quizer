@@ -48,7 +48,7 @@ export async function generateMetadata(): Promise<Metadata> {
       frameTags: Object.values(frameTags),
       'of:accepts:xmtp': '2024-02-01',
     } 
-  };
+  }
 }
 
 const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
