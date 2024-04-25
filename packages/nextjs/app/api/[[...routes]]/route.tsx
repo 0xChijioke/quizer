@@ -19,9 +19,7 @@ type State = {
 const app = new Frog<{ State: State }>({
   assetsPath: "/",
   basePath: "/api",
-  // Supply a Hub to enable frame verification.
   // hub: pinata(),
-  // hubApiUrl: "https://api.hub.wevm.dev"
   initialState: {
     user: "",
     quizId: "",
@@ -68,12 +66,9 @@ app.frame("/", async c => {
   const buttonValue = c.buttonValue;
 
   if (buttonValue) {
-    // Retrieve the user's fid from frame data
     const fid = c.frameData?.fid;
 
-    // Derive new state based on previous state
   const state = await c.deriveState(async previousState => {
-    // Fetch questions if not fetched previously
     
       previousState.quizId = buttonValue;
       // console.log(previousState.questions)
@@ -135,7 +130,7 @@ app.frame("/", async c => {
           Intermediate
         </Button>,
         <Button key={"hard"} value="hard">
-          Advanced 💀
+          Advanced
         </Button>,
       ],
     });
@@ -168,7 +163,6 @@ app.frame("/quiz", async c => {
         buttonValue as "Easy" | "Medium" | "Hard",
         requestedHash,
       )) as unknown as any[];
-      // console.log(previousState.questions)
     }
   });
 

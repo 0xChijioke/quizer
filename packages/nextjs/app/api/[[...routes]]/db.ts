@@ -1,52 +1,23 @@
 import axios from "axios";
 
-// Cached variable to hold questions
-let cachedQuestions: any[] | null = null;
-
-
-function readHashFromEnvironment() {
-  return process.env.HASH_VALUE || null;
-}
-
-// Function to fetch and return questions by difficulty
 export const db = {
-  getQuestionsByDifficulty: async (difficulty: "Easy" | "Medium" | "Hard", requestedHash: any) => {
+  getQuestionsByDifficulty: async (difficulty: "Easy" | "Medium" | "Hard" | "Any", requestedHash: any) => {
     try {
-      // If questions are already cached, return them directly
-      if (cachedQuestions && cachedQuestions.length > 0) {
-        const filteredCachedQuestions = cachedQuestions.filter(question => question.difficulty === difficulty);
-        if (filteredCachedQuestions.length >= 5) {
-          return filteredCachedQuestions.slice(0, 5);
-        }
-      }
-
       let hash;
 
-      // // If requestedHash is provided, use it instead of the stored hash
       if (requestedHash) {
         hash = requestedHash;
       } else {
-        hash = readHashFromEnvironment();
-      }
-;
-      const questions = hash && (await fetchQuestions(hash));
-
-      // Cache the fetched questions only if questions are fetched
-      if (questions) {
-        cachedQuestions = questions;
-      } else if (!cachedQuestions) {
-        throw new Error("Failed to fetch questions and cache is empty");
+        throw new Error("Hash of the quiz is required");
       }
 
-      // Log the fetched questions for debugging
-      // console.log('Fetched questions:', cachedQuestions);
+      const questions = await fetchQuestions(hash);
+
 
       // Filter the fetched questions based on the requested difficulty level
-      const filteredQuestions = cachedQuestions.filter(
-        question => question.difficulty.toLowerCase() === difficulty.toLowerCase(),
+      let filteredQuestions = questions.filter(
+        question => question.difficulty.toLowerCase() === difficulty.toLowerCase() || "Any".toLowerCase(),
       );
-
-      // console.log("filteredQuestions", filteredQuestions);
       // Check if filteredQuestions is empty after filtering
       if (filteredQuestions.length === 0) {
         throw new Error("No questions found for the requested difficulty");
