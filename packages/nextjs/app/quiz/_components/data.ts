@@ -1,7 +1,7 @@
 "use server";
 
-import { Readable } from 'stream';
 import { pinata } from '~~/app/common/config';
+
 
 
 const pinDataWithPinata = async (data: any) => {
@@ -9,19 +9,13 @@ const pinDataWithPinata = async (data: any) => {
     throw new Error("Data is empty or invalid.");
   }
 
-  const bufferData = JSON.stringify(data);
-
-  const dataStream = Readable.from(bufferData);
-
   const options = {
     pinataMetadata: {
       name: "QuizData",
     },
   };
 
-  const { IpfsHash } = await pinata.pinFileToIPFS(dataStream, options);
-
-  console.log(IpfsHash)
+  const { IpfsHash } = await pinata.pinJSONToIPFS(data, options);
 
   return IpfsHash;
   };

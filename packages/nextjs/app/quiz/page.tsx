@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { pinDataWithPinata } from "./_components/data";
 import type { NextPage } from "next";
 import { Address } from "~~/components/scaffold-eth";
-import { useScaffoldContractWrite, useScaffoldEventSubscriber } from "~~/hooks/scaffold-eth";
+import { useScaffoldContractWrite, useScaffoldEventHistory, useScaffoldEventSubscriber } from "~~/hooks/scaffold-eth";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { getMetadata } from "~~/utils/scaffold-eth/getMetadata";
 import { useAccount } from "wagmi";
@@ -36,7 +36,7 @@ const Home: NextPage = () => {
   });
 
   const [quizData, setQuizData] = useState<any[]>([]); // Hold validated questions
-  const [ipfshash, setIpfsHash] = useState<string>("");
+  const [hash, setHash] = useState<string>("");
   const [threshold, setThreshold] = useState<bigint>(BigInt('80')); // set threshold to 80% for now
   
   const [loading, setLoading] = useState<boolean>(false);
@@ -52,12 +52,13 @@ const Home: NextPage = () => {
   const { writeAsync, isLoading, isMining } = useScaffoldContractWrite({
     contractName: "Quizer",
     functionName: "createQuiz",
-    args: [ipfshash, threshold],
+    args: [hash, threshold],
     blockConfirmations: 1,
     onBlockConfirmation: txnReceipt => {
       console.log("Transaction blockHash", txnReceipt.blockHash);
     },
   });
+  // console.log('data, iserror, issuccess', data, isError, isSuccess)
   
   
   
@@ -68,11 +69,27 @@ const Home: NextPage = () => {
       listener: logs => {
         logs.map(log => {
           const { quizId } = log.args;
-          console.log("📡 GreetingChange event", quizId);
+          console.log("📡 Quiz Id", quizId);
           quizId && setQuizId(quizId as any);
         });
       },
     });
+
+    const {
+      data: events,
+      isLoading: isLoadingEvents,
+      error: errorReadingEvents,
+    } = useScaffoldEventHistory({
+      contractName: "Quizer",
+      eventName: "QuizCreated",
+      fromBlock: 1n,
+      watch: true,
+      filters: { creator: address },
+      blockData: true,
+      transactionData: true,
+      receiptData: true,
+    });
+    // console.log(events)
   
   
   
@@ -84,7 +101,7 @@ const Home: NextPage = () => {
       listener: (logs): void => {
         logs.map(log => {
           const { fid, quizId, timestamp } = log.args;
-          console.log("📡 GreetingChange event", quizId, fid, timestamp);
+          // console.log("📡 GreetingChange event", quizId, fid, timestamp);
         });
       },
     });
@@ -119,7 +136,7 @@ const Home: NextPage = () => {
         formData.options.some(option => option.trim() === "")
       ) {
         alert("Please fill out the current question and provide at least two options.");
-        return; // Prevent navigating to next question if current question is incomplete
+        return; 
       }
   
       if (formData.options.length < 2 || formData.options.length > 4) {
@@ -171,7 +188,7 @@ const Home: NextPage = () => {
   
         const ipfshash = await pinDataWithPinata(quizData);
   
-        setIpfsHash(ipfshash);
+        setHash(ipfshash);
   
         // Call the startQuiz function in the smart contract
         await writeAsync();
@@ -183,6 +200,8 @@ const Home: NextPage = () => {
           difficulty: "Any",
         });
         setQuestionNumber(1);
+        setQuizId(null); // Reset quizId
+        setCopied(false);
   
   
       } catch (error) {
@@ -210,6 +229,7 @@ const Home: NextPage = () => {
                       const myModal = document.getElementById("my_modal") as HTMLDialogElement | null;
                       if (myModal) {
                         myModal.close();
+                        setQuizId(null);
                       }
                     }}
                   >
