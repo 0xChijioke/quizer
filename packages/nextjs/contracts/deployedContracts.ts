@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   84532: {
     Quiz: {
-      address: "0xBebD603574FB8768aA8077e51ED1B00e80207Ee1",
+      address: "0xa869a48490c73d61dEbA667e916ca98Ca6bd1F5E",
       abi: [
         {
           inputs: [
@@ -311,7 +311,7 @@ const deployedContracts = {
       },
     },
     Quizer: {
-      address: "0xCd93c505DFc0A2BfC5F1441e26498a9eFE2A3525",
+      address: "0x4BbEa3580884a57A2D3F5a7496960aEf920b6092",
       abi: [
         {
           inputs: [

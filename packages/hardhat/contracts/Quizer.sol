@@ -115,7 +115,8 @@ contract Quizer is Ownable {
      * @param _threshold Reward threshold for the quiz.
      */
     function createQuiz(string memory _quizHash, uint256 _threshold) external {
-        require(_threshold > 10 && _threshold <= 100, "Invalid threshold percentage");
+        // require(_threshold > 10 && _threshold <= 100, "Invalid threshold percentage");
+        console.log(_quizHash);
         // Generate keccak256 hash of the IPFS hash
         bytes32 quizId = keccak256(abi.encodePacked(_quizHash, _threshold, msg.sender));
 
@@ -137,12 +138,13 @@ contract Quizer is Ownable {
      */
     function startQuiz(uint256 _fid, bytes32 _quizId) external {
         // Check if the quizId is valid
-        require(bytes(quizzes[_quizId].quizHash).length != 0, "Invalid quizId");
+        // require(bytes(quizzes[_quizId].quizHash).length != 0, "Invalid quizId");
 
         // Check if the user's fid exists, if not, update user data
         if (userData[_fid].userAddress == address(0)) {
             _updateUserData(_fid, address(0), 0); 
         }
+
 
 
 
@@ -157,6 +159,7 @@ contract Quizer is Ownable {
         // Get the quiz struct
         Quiz memory quiz = _getQuiz(_quizId);
 
+        console.log(quiz.quizHash);
 
         userQuizAttempts[_fid][_quizId].state = QuizState.InProgress;
         userQuizAttempts[_fid][_quizId].startTime = block.timestamp;
