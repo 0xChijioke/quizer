@@ -138,7 +138,6 @@ contract Quizer is Ownable {
      */
     function startQuiz(uint256 _fid, bytes32 _quizId) external {
         // Check if the quizId is valid
-        // require(bytes(quizzes[_quizId].quizHash).length != 0, "Invalid quizId");
 
         // Check if the user's fid exists, if not, update user data
         if (userData[_fid].userAddress == address(0)) {
@@ -193,7 +192,7 @@ contract Quizer is Ownable {
      */
     function completeQuiz(uint256 _fid, bytes32 _quizId, uint256 _score) external {
         // Check if the user has started the quiz
-        // require(userQuizAttempts[_fid][_quizId].state == QuizState.InProgress, "Quiz not started");
+        require(userQuizAttempts[_fid][_quizId].state == QuizState.InProgress, "Quiz not started");
 
         QuizAttempt storage attempt = userQuizAttempts[_fid][_quizId];
 
@@ -274,8 +273,8 @@ contract Quizer is Ownable {
      * @param recipient Address of the reward recipient.
      */
     function claimReward(uint256 fid, bytes32 quizId, address recipient) external {
-        // require(userQuizAttempts[fid][quizId].eligible, "Not eligible for reward");
-        // require(!userQuizAttempts[fid][quizId].rewardClaimed, "Reward already claimed");
+        require(userQuizAttempts[fid][quizId].eligible, "Not eligible for reward");
+        require(!userQuizAttempts[fid][quizId].rewardClaimed, "Reward already claimed");
 
         // Check if the caller is the owner or the user associated with the fid
         require(msg.sender == owner() || msg.sender == userData[fid].userAddress, "Unauthorized claim");
