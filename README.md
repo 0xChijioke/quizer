@@ -26,9 +26,6 @@ function claimReward(uint256 fid, bytes32 quizId, address recipient) external
 ```
 
 
-If quiz creation fails or a quiz is cast with an arbitrary hash the frame defaults to a hardcoded hash in the env variables.
-
-
 ## Tech Stack 🛠️
 
 Quizer is built with the following technologies:
