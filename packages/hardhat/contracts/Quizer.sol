@@ -31,9 +31,12 @@ contract Quizer is Ownable {
 
     // Structure to represent quiz data
     struct Quiz {
+        string title;        // Title of the quiz
+        string description;  // Description of the quiz
+        uint256 duration;    // Duration of the quiz in seconds
+        address creator;    // Creator of the quiz
         string quizHash;    // IPFS hash of the quiz content
         uint256 threshold;     // Reward threshold for the quiz
-        address creator;    // Creator of the quiz
     }
 
     struct QuizAttempt {
@@ -50,6 +53,12 @@ contract Quizer is Ownable {
     
     // Enum to represent the state of a quiz attempt
     enum QuizState { NotStarted, InProgress, Completed }
+
+    enum QuizStatus { Draft, InReview, Published, Archived }
+
+
+
+    mapping(bytes32 => QuizStatus) private quizStatus;
 
 
     // Mapping to store quiz attempts for each user
@@ -114,14 +123,26 @@ contract Quizer is Ownable {
      * @param _quizHash IPFS hash of the quiz content.
      * @param _threshold Reward threshold for the quiz.
      */
-    function createQuiz(string memory _quizHash, uint256 _threshold) external {
+    function createQuiz(
+        string memory _title,
+        string memory _description,
+        uint256 _duration,
+        string memory _quizHash, 
+        uint256 _threshold) external {
         // require(_threshold > 10 && _threshold <= 100, "Invalid threshold percentage");
         console.log(_quizHash);
         // Generate keccak256 hash of the IPFS hash
         bytes32 quizId = keccak256(abi.encodePacked(_quizHash, _threshold, msg.sender));
 
         // Store hash in the mapping
-        quizzes[quizId] = Quiz(_quizHash, _threshold, msg.sender);
+        quizzes[quizId] = Quiz({
+        title: _title,
+        description: _description,
+        creator: msg.sender,
+        duration: _duration,
+        quizHash: _quizHash,
+        threshold: _threshold
+    });
 
         // Emit event
         emit QuizCreated(quizId, msg.sender);
@@ -185,7 +206,7 @@ contract Quizer is Ownable {
 
 
     /**
-     * @dev Allows the owner to complete a quiz attempt.
+     * @dev Allows the quizzer to complete a quiz attempt.
      * @param _fid Identifier of the user.
      * @param _quizId Identifier of the quiz.
      * @param _score Score obtained by the user.
@@ -381,6 +402,20 @@ contract Quizer is Ownable {
 
         emit UserDataUpdated(fid, userAddress);
     }
+
+
+
+
+    function publishQuiz(bytes32 quizId) external onlyOwner {
+        quizStatus[quizId] = QuizStatus.Published;
+    }
+
+
+
+    function archiveQuiz(bytes32 quizId) external onlyOwner {
+        quizStatus[quizId] = QuizStatus.Archived;
+    }
+
 
 
 
