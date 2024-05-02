@@ -19,11 +19,6 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import { useRouter } from "next/navigation";
-// import { SignerContextProvider } from "~~/contexts/SignerContext";
-
-// const TurnkeyIframeContainerId = "turnkey-iframe-container-id";
-// const TurnkeyIframeElementId = "turnkey-iframe-element-id";
-
 
 
 const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
@@ -59,28 +54,13 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
     setMounted(true);
   }, []);
 
-  // const [clientConfig] = useState({
-  //   connection: {     
-  //     apiKey: process.env.ALCHEMY_ACCESS_KEY!,
-  //     rpcUrl: process.env.NEXT_PUBLIC_ALCHEMY_RPC!,
-  //   },
-  //   iframeConfig: {
-  //     iframeContainerId: TurnkeyIframeContainerId,
-  //     iframeElementId: TurnkeyIframeElementId,
-  //   },
-  // });
-
-
-
-
-
+  
 
 
   return (
     <WagmiConfig config={wagmiConfig}>
       <ProgressBar />
       <QueryClientProvider client={queryClient}>
-        {/* <SignerContextProvider client={clientConfig}> */}
           <RainbowKitProvider
             chains={appChains.chains}
             avatar={BlockieAvatar}
@@ -102,7 +82,6 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
               <ScaffoldEthApp>{children}</ScaffoldEthApp>
             </PrivyProvider>
           </RainbowKitProvider>
-        {/* </SignerContextProvider> */}
       </QueryClientProvider>
     </WagmiConfig>
   );
