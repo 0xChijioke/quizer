@@ -94,6 +94,9 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
                   theme: isDarkMode ? "dark" : "light",
                   logo: "./logo.png",
                 },
+                embeddedWallets: {
+                  createOnLogin: 'all-users'
+                }
               }}
             >
               <ScaffoldEthApp>{children}</ScaffoldEthApp>
