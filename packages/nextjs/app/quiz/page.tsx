@@ -220,7 +220,7 @@ const Home: NextPage = () => {
         <div className="flex items-center max-w-full flex-col pt-10">
           <div className="flex flex-col items-center w-full card lg:w-[50%] bg-base-100 shadow-md shadow-secondary p-4 lg:p-8 justify-center">
             {quizId && (
-              <dialog id="my_modal" className="modal" open>
+              <dialog id="my_modal" className="modal">
                 <div className="modal-box w-11/12 max-w-3xl">                    
                   <button
                     type="button"
@@ -246,11 +246,11 @@ const Home: NextPage = () => {
                 </div>
               </dialog>
             )}
-            <div className="items-center p-3 bg-opacity-10 rounded-lg flex justify-center w-full bg-slate-400">
+            {/* <div className="items-center p-3 bg-opacity-10 rounded-lg flex justify-center w-full bg-slate-400">
               <h1 className="text-lg font-bold gap-x-4 flex tracking-wide whitespace-nowrap text-right">
               gm <Address address={address} />
               </h1>
-            </div>
+            </div> */}
             <form onSubmit={handleSubmit} className="space-y-6">
               <p className="mb-4">Enter Question {questionNumber}</p>
               <div className="flex flex-col justify-end">
