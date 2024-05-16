@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 // Useful for debugging. Remove when deploying to a live network.
-import "hardhat/console.sol";
+import "hardhat/console.sol"; // TODO: remove before deployment.
 
 // openzeppelin
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -131,10 +131,10 @@ contract Quizer is Ownable {
         uint256 _threshold) external {
         // require(_threshold > 10 && _threshold <= 100, "Invalid threshold percentage");
         console.log(_quizHash);
-        // Generate keccak256 hash of the IPFS hash
-        bytes32 quizId = keccak256(abi.encodePacked(_quizHash, _threshold, msg.sender));
+        // Generate keccak256 hash of the IPFS hash and mask to bytes4
+        bytes4 quizId = bytes4(keccak256(abi.encodePacked(_quizHash, _threshold, msg.sender)) & 0xFFFFFFFF);
 
-        // Store hash in the mapping
+        // Store quiz in the mapping
         quizzes[quizId] = Quiz({
         title: _title,
         description: _description,
