@@ -58,40 +58,40 @@ contract Quizer is Ownable {
 
 
 
-    mapping(bytes32 => QuizStatus) private quizStatus;
+    mapping(bytes4 => QuizStatus) private quizStatus;
 
 
     // Mapping to store quiz attempts for each user
-    mapping(uint256 => mapping(bytes32 => QuizAttempt)) private userQuizAttempts;
+    mapping(uint256 => mapping(bytes4 => QuizAttempt)) private userQuizAttempts;
 
 
 
 
 
     // Mapping to store IPFS hash with its associated identifier
-    mapping(bytes32 => Quiz) private quizzes;
+    mapping(bytes4 => Quiz) private quizzes;
 
     // Mapping to store user data with their FID
     mapping(uint256 => UserData) private userData;
 
     // Mapping to store quiz attempts for each user
-    mapping(uint256 => bytes32[]) private userQuizIds;
+    mapping(uint256 => bytes4[]) private userQuizIds;
 
     
 
     
     // Event to emit when IPFS hash is stored
-    event QuizCreated(bytes32 indexed quizId, address indexed creator);
+    event QuizCreated(bytes4 indexed quizId, address indexed creator);
 
     // Event to emit when a user requests to take a quiz
-    event QuizStarted(uint256 indexed fid, bytes32 indexed quizId, uint256 timestamp, string quizHash);
+    event QuizStarted(uint256 indexed fid, bytes4 indexed quizId, uint256 timestamp, string quizHash);
 
     // Event to emit when a user completes a quiz
-    event QuizCompleted(uint256 indexed fid, bytes32 indexed quizId, uint256 score, uint256 timestamp, bool eligible);
+    event QuizCompleted(uint256 indexed fid, bytes4 indexed quizId, uint256 score, uint256 timestamp, bool eligible);
 
 
     // Event to emit when a user completes a quiz and earns reward
-    event RewardClaimed(uint256 indexed fid, bytes32 quizId, uint256 rewardAmount);
+    event RewardClaimed(uint256 indexed fid, bytes4 quizId, uint256 rewardAmount);
 
 
 
@@ -157,7 +157,7 @@ contract Quizer is Ownable {
      * @param _fid Identifier of the user.
      * @param _quizId Identifier of the quiz.
      */
-    function startQuiz(uint256 _fid, bytes32 _quizId) external {
+    function startQuiz(uint256 _fid, bytes4 _quizId) external {
         // Check if the quizId is valid
 
         // Check if the user's fid exists, if not, update user data
@@ -196,7 +196,7 @@ contract Quizer is Ownable {
      * @param _fid Identifier of the user.
      * @param _quizId Identifier of the quiz.
      */
-    function restartQuiz(uint256 _fid, bytes32 _quizId) external {
+    function restartQuiz(uint256 _fid, bytes4 _quizId) external {
         require(userQuizAttempts[_fid][_quizId].state == QuizState.InProgress || userQuizAttempts[_fid][_quizId].state == QuizState.Completed, "Quiz not Started");
         require(!userQuizAttempts[_fid][_quizId].restarted, "Quiz already restarted");
 
@@ -211,7 +211,7 @@ contract Quizer is Ownable {
      * @param _quizId Identifier of the quiz.
      * @param _score Score obtained by the user.
      */
-    function completeQuiz(uint256 _fid, bytes32 _quizId, uint256 _score) external {
+    function completeQuiz(uint256 _fid, bytes4 _quizId, uint256 _score) external {
         // Check if the user has started the quiz
         require(userQuizAttempts[_fid][_quizId].state == QuizState.InProgress, "Quiz not started");
 
@@ -269,7 +269,7 @@ contract Quizer is Ownable {
         uint256 totalPossibleScore = userQuizIds[fid].length * 100;
 
         for (uint256 i = 0; i < userQuizIds[fid].length; i++) {
-            bytes32 quizId = userQuizIds[fid][i];
+            bytes4 quizId = userQuizIds[fid][i];
             if (userQuizAttempts[fid][quizId].state == QuizState.Completed) {
                 totalScore += userQuizAttempts[fid][quizId].score;
             }
@@ -293,7 +293,7 @@ contract Quizer is Ownable {
      * @param quizId Identifier of the quiz.
      * @param recipient Address of the reward recipient.
      */
-    function claimReward(uint256 fid, bytes32 quizId, address recipient) external {
+    function claimReward(uint256 fid, bytes4 quizId, address recipient) external {
         require(userQuizAttempts[fid][quizId].eligible, "Not eligible for reward");
         require(!userQuizAttempts[fid][quizId].rewardClaimed, "Reward already claimed");
 
@@ -320,7 +320,7 @@ contract Quizer is Ownable {
      * @param quizId Identifier of the quiz.
      * @return The reward amount.
      */
-    function _calculateReward(uint256 fid, bytes32 quizId) internal view returns (uint256) {
+    function _calculateReward(uint256 fid, bytes4 quizId) internal view returns (uint256) {
         // Get the quiz attempt
         QuizAttempt storage attempt = userQuizAttempts[fid][quizId];
         uint256 startTime = attempt.startTime;
@@ -406,13 +406,13 @@ contract Quizer is Ownable {
 
 
 
-    function publishQuiz(bytes32 quizId) external onlyOwner {
+    function publishQuiz(bytes4 quizId) external onlyOwner {
         quizStatus[quizId] = QuizStatus.Published;
     }
 
 
 
-    function archiveQuiz(bytes32 quizId) external onlyOwner {
+    function archiveQuiz(bytes4 quizId) external onlyOwner {
         quizStatus[quizId] = QuizStatus.Archived;
     }
 
@@ -430,7 +430,7 @@ contract Quizer is Ownable {
 
 
 
-    function _getQuiz(bytes32 quizId) private view returns (Quiz memory) {
+    function _getQuiz(bytes4 quizId) private view returns (Quiz memory) {
         return quizzes[quizId];
     }
 
