@@ -36,7 +36,8 @@ contract Quizer is Ownable {
         uint256 duration;    // Duration of the quiz in seconds
         address creator;    // Creator of the quiz
         string quizHash;    // IPFS hash of the quiz content
-        uint256 threshold;     // Reward threshold for the quiz
+        uint256 threshold;     // Reward threshold for the quiz  
+        uint256 maxRetries;  // Maximum number of retries allowed
     }
 
     struct QuizAttempt {
@@ -47,6 +48,7 @@ contract Quizer is Ownable {
         bool eligible; // Flag indicating if the user is eligible for a reward
         bool rewardClaimed; // Flag indicating if the reward was claimed
         bool restarted; // Flag indicating if the quiz attempt was restarted
+        uint256 retryCount;  // Number of retries
     }
 
     
@@ -85,6 +87,10 @@ contract Quizer is Ownable {
 
     // Event to emit when a user requests to take a quiz
     event QuizStarted(uint256 indexed fid, bytes4 indexed quizId, uint256 timestamp, string quizHash);
+
+
+    // Event to emit when a user restarts a quiz
+    event QuizRestarted(uint256 indexed fid, bytes4 indexed quizId, uint256 retryCount, uint256 timestamp);
 
     // Event to emit when a user completes a quiz
     event QuizCompleted(uint256 indexed fid, bytes4 indexed quizId, uint256 score, uint256 timestamp, bool eligible);
@@ -127,12 +133,15 @@ contract Quizer is Ownable {
         string memory _title,
         string memory _description,
         uint256 _duration,
+        uint256 _maxRetries,
         string memory _quizHash, 
         uint256 _threshold) external {
         // require(_threshold > 10 && _threshold <= 100, "Invalid threshold percentage");
         console.log(_quizHash);
-        // Generate keccak256 hash of the IPFS hash and mask to bytes4
-        bytes4 quizId = bytes4(keccak256(abi.encodePacked(_quizHash, _threshold, msg.sender)) & 0xFFFFFFFF);
+        // Generate bytes4 quizId of the quiz IPFS hash
+        bytes4 quizId = bytes4(keccak256(abi.encodePacked(_title, _quizHash, _threshold, msg.sender, block.timestamp)));
+
+
 
         // Store quiz in the mapping
         quizzes[quizId] = Quiz({
@@ -141,7 +150,8 @@ contract Quizer is Ownable {
         creator: msg.sender,
         duration: _duration,
         quizHash: _quizHash,
-        threshold: _threshold
+        threshold: _threshold,
+        maxRetries: _maxRetries
     });
 
         // Emit event
@@ -197,10 +207,23 @@ contract Quizer is Ownable {
      * @param _quizId Identifier of the quiz.
      */
     function restartQuiz(uint256 _fid, bytes4 _quizId) external {
-        require(userQuizAttempts[_fid][_quizId].state == QuizState.InProgress || userQuizAttempts[_fid][_quizId].state == QuizState.Completed, "Quiz not Started");
-        require(!userQuizAttempts[_fid][_quizId].restarted, "Quiz already restarted");
+        QuizAttempt storage attempt = userQuizAttempts[_fid][_quizId];
+        require(attempt.state != QuizState.NotStarted, "Quiz not started");
+        
+        // Check if the user has remaining retries
+        require(attempt.retryCount < quizzes[_quizId].maxRetries, "Max retries reached");
+
+        // Increment the retry count
+        attempt.retryCount++;
+        
+        // Update attempt state to in progress
+        attempt.state = QuizState.InProgress;
 
         userQuizAttempts[_fid][_quizId].restarted = true;
+
+
+        emit QuizRestarted(_fid, _quizId, attempt.retryCount, block.timestamp);
+
     }
 
 
