@@ -25,8 +25,9 @@ contract Quizer is Ownable {
 
 	// Structure to represent user data
     struct UserData {
-        address userAddress; // User's verified address
         uint256 score;       // User's score
+        uint256 fid;         // User's unique identifier
+        address verifiedAddress; // User's verified address
     }
 
     // Structure to represent quiz data
@@ -45,10 +46,9 @@ contract Quizer is Ownable {
         uint256 score;  // Score achieved by the user
         uint256 startTime; // Time when the quiz was started
         uint256 completionTime; // Time when the quiz was completed
+        uint256 retryCount;  // Number of retries
         bool eligible; // Flag indicating if the user is eligible for a reward
         bool rewardClaimed; // Flag indicating if the reward was claimed
-        bool restarted; // Flag indicating if the quiz attempt was restarted
-        uint256 retryCount;  // Number of retries
     }
 
     
@@ -64,7 +64,7 @@ contract Quizer is Ownable {
 
 
     // Mapping to store quiz attempts for each user
-    mapping(uint256 => mapping(bytes4 => QuizAttempt)) private userQuizAttempts;
+    mapping(address => mapping(bytes4 => QuizAttempt)) private userQuizAttempts;
 
 
 
@@ -73,11 +73,11 @@ contract Quizer is Ownable {
     // Mapping to store IPFS hash with its associated identifier
     mapping(bytes4 => Quiz) private quizzes;
 
-    // Mapping to store user data with their FID
-    mapping(uint256 => UserData) private userData;
+    // Mapping to store user data with their address
+    mapping(address => UserData) private userData;
 
     // Mapping to store quiz attempts for each user
-    mapping(uint256 => bytes4[]) private userQuizIds;
+    mapping(address => bytes4[]) private userQuizIds;
 
     
 
@@ -86,27 +86,27 @@ contract Quizer is Ownable {
     event QuizCreated(bytes4 indexed quizId, address indexed creator);
 
     // Event to emit when a user requests to take a quiz
-    event QuizStarted(uint256 indexed fid, bytes4 indexed quizId, uint256 timestamp, string quizHash);
+    event QuizStarted(address indexed userAddress, bytes4 indexed quizId, uint256 timestamp, string quizHash);
 
 
     // Event to emit when a user restarts a quiz
-    event QuizRestarted(uint256 indexed fid, bytes4 indexed quizId, uint256 retryCount, uint256 timestamp);
+    event QuizRestarted(address indexed userAddress, bytes4 indexed quizId, uint256 retryCount, uint256 timestamp);
 
     // Event to emit when a user completes a quiz
-    event QuizCompleted(uint256 indexed fid, bytes4 indexed quizId, uint256 score, uint256 timestamp, bool eligible);
+    event QuizCompleted(address indexed userAddress, bytes4 indexed quizId, uint256 score, uint256 timestamp, bool eligible);
 
 
-    // Event to emit when a user completes a quiz and earns reward
-    event RewardClaimed(uint256 indexed fid, bytes4 quizId, uint256 rewardAmount);
+    // Event to emit when a user claims reward
+    event RewardClaimed(address indexed userAddress, bytes4 quizId, uint256 rewardAmount);
 
 
 
 
-	// Event to emit when user data is updated
-    event UserDataUpdated(uint256 indexed fid, address indexed userAddress);
+    // Event to emit when user data is updated
+    event UserDataUpdated(address indexed userAddress, address indexed verifiedAddress, uint256 indexed fid);
 
 	// Event to emit when user score is updated
-    event UserScoreUpdated(uint256 indexed fid, address, uint256 score);
+    event UserScoreUpdated(address indexed userAddress, uint256 score);
 
 
 
@@ -126,6 +126,10 @@ contract Quizer is Ownable {
 
     /**
      * @dev Function to create a new quiz.
+     * @param _title Title of the quiz.
+     * @param _description Description of the quiz.
+     * @param _duration Duration of the quiz.
+     * @param _maxRetries Maximum retries allowed for the quiz.
      * @param _quizHash IPFS hash of the quiz content.
      * @param _threshold Reward threshold for the quiz.
      */
@@ -155,47 +159,60 @@ contract Quizer is Ownable {
     });
 
         // Emit event
-        emit QuizCreated(quizId, msg.sender);
+        emit QuizCreated(quizId, msg.sender); // TODO: Add block.timestamp?
 
     }
 
 
 
 
+    
     /**
      * @dev Function to start a quiz attempt.
-     * @param _fid Identifier of the user.
+     * @param _userAddress Address of the user.
      * @param _quizId Identifier of the quiz.
      */
-    function startQuiz(uint256 _fid, bytes4 _quizId) external {
-        // Check if the quizId is valid
+    function startQuiz(address _userAddress, bytes4 _quizId) external {
+        // Ensure the user address is not zero
+        require(_userAddress != address(0), "Invalid user address");
 
-        // Check if the user's fid exists, if not, update user data
-        if (userData[_fid].userAddress == address(0)) {
-            _updateUserData(_fid, address(0), 0); 
+        // Check if the user data exists; if not, create a new entry
+        if (userData[_userAddress].verifiedAddress == address(0)) {
+            // Create a basic user data entry with userAddress.
+            // verifiedAddress can be updated later.
+            _updateUserData(_userAddress, _userAddress, 0, 0); 
         }
+
+        // Check if the user has not already started the quiz
+        require(userQuizAttempts[_userAddress][_quizId].state == QuizState.NotStarted, "Quiz already in progress or completed");
 
 
 
 
         // Check if the user has not already started the quiz
-        require(userQuizAttempts[_fid][_quizId].state == QuizState.NotStarted, "Quiz already in progress or completed");
+        require(userQuizAttempts[_userAddress][_quizId].state == QuizState.NotStarted, "Quiz already in progress or completed");
 
         
         
         // Add the quizId to the user's list of attempts
-        userQuizIds[_fid].push(_quizId);
+        userQuizIds[_userAddress].push(_quizId);
 
+      
         // Get the quiz struct
         Quiz memory quiz = _getQuiz(_quizId);
 
-        console.log(quiz.quizHash);
+        // Update attempt data
+        userQuizAttempts[_userAddress][_quizId] = QuizAttempt({
+            state: QuizState.InProgress,
+            score: 0,
+            startTime: block.timestamp,
+            completionTime: 0,
+            retryCount: 0,
+            eligible: false,
+            rewardClaimed: false
+        });
 
-        userQuizAttempts[_fid][_quizId].state = QuizState.InProgress;
-        userQuizAttempts[_fid][_quizId].startTime = block.timestamp;
-
-        emit QuizStarted(_fid, _quizId, block.timestamp, quiz.quizHash);
-
+        emit QuizStarted(_userAddress, _quizId, block.timestamp, quiz.quizHash);
     }
 
 
@@ -203,11 +220,11 @@ contract Quizer is Ownable {
 
     /**
      * @dev Allows a user to restart a quiz attempt.
-     * @param _fid Identifier of the user.
+     * @param _userAddress Identifier of the user.
      * @param _quizId Identifier of the quiz.
      */
-    function restartQuiz(uint256 _fid, bytes4 _quizId) external {
-        QuizAttempt storage attempt = userQuizAttempts[_fid][_quizId];
+    function restartQuiz(address _userAddress, bytes4 _quizId) external {
+        QuizAttempt storage attempt = userQuizAttempts[_userAddress][_quizId];
         require(attempt.state != QuizState.NotStarted, "Quiz not started");
         
         // Check if the user has remaining retries
@@ -219,10 +236,7 @@ contract Quizer is Ownable {
         // Update attempt state to in progress
         attempt.state = QuizState.InProgress;
 
-        userQuizAttempts[_fid][_quizId].restarted = true;
-
-
-        emit QuizRestarted(_fid, _quizId, attempt.retryCount, block.timestamp);
+        emit QuizRestarted(_userAddress, _quizId, attempt.retryCount, block.timestamp);
 
     }
 
@@ -230,15 +244,15 @@ contract Quizer is Ownable {
 
     /**
      * @dev Allows the quizzer to complete a quiz attempt.
-     * @param _fid Identifier of the user.
+     * @param _userAddress Identifier of the user.
      * @param _quizId Identifier of the quiz.
      * @param _score Score obtained by the user.
      */
-    function completeQuiz(uint256 _fid, bytes4 _quizId, uint256 _score) external {
+    function completeQuiz(address _userAddress, bytes4 _quizId, uint256 _score) external {
         // Check if the user has started the quiz
-        require(userQuizAttempts[_fid][_quizId].state == QuizState.InProgress, "Quiz not started");
+        require(userQuizAttempts[_userAddress][_quizId].state == QuizState.InProgress, "Quiz not started");
 
-        QuizAttempt storage attempt = userQuizAttempts[_fid][_quizId];
+        QuizAttempt storage attempt = userQuizAttempts[_userAddress][_quizId];
 
 
         // Normalize the score to a percentage
@@ -247,7 +261,7 @@ contract Quizer is Ownable {
         uint256 adjustedScore;
         
 
-        if (attempt.restarted) {
+        if (attempt.retryCount > 0) {
             // 30% reduction for restarted quiz
             adjustedScore = (normalizedScore * 7) / 10;
 
@@ -259,14 +273,14 @@ contract Quizer is Ownable {
         // Check if the user's score meets the reward threshold
         if (adjustedScore >= 80) { // Threshold set at 80%
             // Mark reward as claimable
-            userQuizAttempts[_fid][_quizId].eligible = true;
+            userQuizAttempts[_userAddress][_quizId].eligible = true;
         }
 
 
         
         // Update cumulative score in userData
-        uint256 cumulativeScore = calculateCumulativeScore(_fid);
-        userData[_fid].score = cumulativeScore;
+        uint256 cumulativeScore = calculateCumulativeScore(_userAddress);
+        userData[_userAddress].score = cumulativeScore;
 
         // Update attempt data
         attempt.state = QuizState.Completed;
@@ -275,26 +289,25 @@ contract Quizer is Ownable {
 
 
         // Emit QuizCompleted event
-        emit QuizCompleted(_fid, _quizId, adjustedScore, block.timestamp, userQuizAttempts[_fid][_quizId].eligible);
+        emit QuizCompleted(_userAddress, _quizId, adjustedScore, block.timestamp, userQuizAttempts[_userAddress][_quizId].eligible);
 
     }
 
 
 
-
     /**
      * @dev Calculates the cumulative score of a user.
-     * @param fid Identifier of the user.
+     * @param _userAddress Address of the user.
      * @return The cumulative score.
      */
-    function calculateCumulativeScore(uint256 fid) public view returns (uint256) {
+    function calculateCumulativeScore(address _userAddress) public view returns (uint256) {
         uint256 totalScore = 0;
-        uint256 totalPossibleScore = userQuizIds[fid].length * 100;
+        uint256 totalPossibleScore = userQuizIds[_userAddress].length * 100;
 
-        for (uint256 i = 0; i < userQuizIds[fid].length; i++) {
-            bytes4 quizId = userQuizIds[fid][i];
-            if (userQuizAttempts[fid][quizId].state == QuizState.Completed) {
-                totalScore += userQuizAttempts[fid][quizId].score;
+        for (uint256 i = 0; i < userQuizIds[_userAddress].length; i++) {
+            bytes4 quizId = userQuizIds[_userAddress][i];
+            if (userQuizAttempts[_userAddress][quizId].state == QuizState.Completed) {
+                totalScore += userQuizAttempts[_userAddress][quizId].score;
             }
         }
 
@@ -312,40 +325,40 @@ contract Quizer is Ownable {
 
     /**
      * @dev Allows a user to claim their reward for completing a quiz.
-     * @param fid Identifier of the user.
+     * @param _userAddress Identifier of the user.
      * @param quizId Identifier of the quiz.
      * @param recipient Address of the reward recipient.
      */
-    function claimReward(uint256 fid, bytes4 quizId, address recipient) external {
-        require(userQuizAttempts[fid][quizId].eligible, "Not eligible for reward");
-        require(!userQuizAttempts[fid][quizId].rewardClaimed, "Reward already claimed");
+    function claimReward(address _userAddress, bytes4 quizId, address recipient) external {
+        require(userQuizAttempts[_userAddress][quizId].eligible, "Not eligible for reward");
+        require(!userQuizAttempts[_userAddress][quizId].rewardClaimed, "Reward already claimed");
 
-        // Check if the caller is the owner or the user associated with the fid
-        require(msg.sender == owner() || msg.sender == userData[fid].userAddress, "Unauthorized claim");
+        // Check if the caller is the owner or the user associated with the _userAddress
+        require(msg.sender == owner() || msg.sender == userData[_userAddress].verifiedAddress, "Unauthorized claim");
 
         // Define the reward amount (replace this with your reward calculation logic)
-        uint256 rewardAmount = _calculateReward(fid, quizId);
+        uint256 rewardAmount = _calculateReward(_userAddress, quizId);
 
 
         // Transfer tokens to the recipient
         _transferTokens(recipient, rewardAmount);
 
         // Mark the reward as claimed
-        userQuizAttempts[fid][quizId].rewardClaimed = true;
+        userQuizAttempts[_userAddress][quizId].rewardClaimed = true;
 
-        emit RewardClaimed(fid, quizId, rewardAmount);
+        emit RewardClaimed(_userAddress, quizId, rewardAmount);
     }
 
 
     /**
      * @dev Calculates the reward amount for a user.
-     * @param fid Identifier of the user.
+     * @param _userAddress Identifier of the user.
      * @param quizId Identifier of the quiz.
      * @return The reward amount.
      */
-    function _calculateReward(uint256 fid, bytes4 quizId) internal view returns (uint256) {
+    function _calculateReward(address _userAddress, bytes4 quizId) internal view returns (uint256) {
         // Get the quiz attempt
-        QuizAttempt storage attempt = userQuizAttempts[fid][quizId];
+        QuizAttempt storage attempt = userQuizAttempts[_userAddress][quizId];
         uint256 startTime = attempt.startTime;
         uint256 completionTime = attempt.completionTime;
         uint256 score = attempt.score;
@@ -399,32 +412,96 @@ contract Quizer is Ownable {
 
     /**
      * @dev Function to retrieve user data.
-     * @param fid Identifier of the user.
-     * @return userAddress Address of the user.
+     * @param _userAddress Identifier of the user.
+     * @return verifiedAddress Address of the user.
      * @return score Score of the user.
      */
-    // Function to retrieve user data for a given FID
-    function getUserData(uint256 fid) external view returns (address, uint256) {
-        return (userData[fid].userAddress, userData[fid].score);
+    // Function to retrieve user data for a given _userAddress
+    function getUserData(address _userAddress) external view returns (address, uint256) {
+        return (userData[_userAddress].verifiedAddress, userData[_userAddress].score);
     }
 	
 
-
-    
     /**
-     * @dev Function to update user data.
-     * @param fid Identifier of the user.
-     * @param userAddress Address of the user.
+     * @dev Internal function to update the user's score.
+     * @param _userAddress Address of the user.
+     * @param _score New score to be updated.
      */
-    function updateUserData(uint256 fid, address userAddress) external onlyOwner {
+    function _updateUserScore(address _userAddress, uint256 _score) internal {
         // Retrieve the existing user data
-        UserData storage user = userData[fid];
+        UserData storage user = userData[_userAddress];
 
-        // Update user data with the new address
-        user.userAddress = userAddress;
+        // Update the user's score
+        user.score = _score;
 
-        emit UserDataUpdated(fid, userAddress);
+        // Emit an event to indicate the score update
+        emit UserScoreUpdated(_userAddress, _score);
     }
+
+   
+    /**
+     * @dev Internal function to update the user's verified address.
+     * @param _userAddress Address of the user.
+     * @param _newVerifiedAddress New verified address to be updated.
+     */
+    function _updateUserVerifiedAddress(address _userAddress, address _newVerifiedAddress) internal {
+        require(_newVerifiedAddress != address(0), "Invalid address");
+
+        // Retrieve the existing user data
+        UserData storage user = userData[_userAddress];
+
+        // Ensure the caller is the owner or the user themselves
+        require(msg.sender == owner() || msg.sender == user.verifiedAddress, "Unauthorized");
+
+        // Update the user's verified address
+        user.verifiedAddress = _newVerifiedAddress;
+
+        // Emit an event to indicate the verified address update
+        emit UserDataUpdated(_userAddress, _newVerifiedAddress, user.fid);
+    }
+
+     /**
+     * @dev Internal function to update the user's fid.
+     * @param _userAddress Address of the user.
+     * @param _fid New fid to be updated.
+     */
+    function _updateUserFid(address _userAddress, uint256 _fid) internal {
+        // Retrieve the existing user data
+        UserData storage user = userData[_userAddress];
+
+        // Update the user's fid
+        user.fid = _fid;
+
+        // Emit an event to indicate the fid update
+        emit UserDataUpdated(_userAddress, user.verifiedAddress, _fid);
+    }
+
+
+
+
+    /**
+    * @dev Internal function to update user data.
+    * @param _userAddress Address of the user.
+    * @param _verifiedAddress Verified address of the user.
+    * @param _fid User's unique identifier.
+    * @param _score User's score.
+    */
+    function _updateUserData(address _userAddress, address _verifiedAddress, uint256 _fid, uint256 _score) internal {
+        userData[_userAddress] = UserData({
+            score: _score,
+            fid: _fid,
+            verifiedAddress: _verifiedAddress
+        });
+        emit UserDataUpdated(_userAddress, _verifiedAddress, _fid);
+    }
+
+
+
+
+    function _getQuiz(bytes4 quizId) private view returns (Quiz memory) {
+        return quizzes[quizId];
+    }
+
 
 
 
@@ -438,26 +515,6 @@ contract Quizer is Ownable {
     function archiveQuiz(bytes4 quizId) external onlyOwner {
         quizStatus[quizId] = QuizStatus.Archived;
     }
-
-
-
-
-	// Function to update user data
-    function _updateUserData(uint256 fid, address userAddress, uint256 score) internal {
-        // Update user data in the mapping
-        userData[fid] = UserData(userAddress, score);
-       
-        emit UserDataUpdated(fid, userAddress);
-    }
-
-
-
-
-    function _getQuiz(bytes4 quizId) private view returns (Quiz memory) {
-        return quizzes[quizId];
-    }
-
-
 
 
 	/**
