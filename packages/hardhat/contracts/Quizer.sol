@@ -51,6 +51,18 @@ contract Quizer is Ownable {
         bool rewardClaimed; // Flag indicating if the reward was claimed
     }
 
+    struct LeaderboardEntry {
+        address user;
+        uint256 score;
+    }
+
+    // Leaderboard storage
+    LeaderboardEntry[] public leaderboard;
+
+    // Mapping to store user's position in the leaderboard
+    mapping(address => uint256) public leaderboardPositions;
+
+
     
     
     // Enum to represent the state of a quiz attempt
@@ -246,52 +258,48 @@ contract Quizer is Ownable {
      * @dev Allows the quizzer to complete a quiz attempt.
      * @param _userAddress Identifier of the user.
      * @param _quizId Identifier of the quiz.
-     * @param _score Score obtained by the user.
+     * @param _score Score percentage for the user.
      */
     function completeQuiz(address _userAddress, bytes4 _quizId, uint256 _score) external {
-        // Check if the user has started the quiz
-        require(userQuizAttempts[_userAddress][_quizId].state == QuizState.InProgress, "Quiz not started");
-
         QuizAttempt storage attempt = userQuizAttempts[_userAddress][_quizId];
-
-
-        // Normalize the score to a percentage
-        uint256 normalizedScore = (_score * 100) / 5; // total of 5
-
-        uint256 adjustedScore;
         
+        // Check if the user has started the quiz
+        require(attempt.state == QuizState.InProgress, "Quiz not started");
 
-        if (attempt.retryCount > 0) {
-            // 30% reduction for restarted quiz
-            adjustedScore = (normalizedScore * 7) / 10;
+        // Get the quiz struct
+        Quiz memory quiz = _getQuiz(_quizId);
 
-        } else {
-            adjustedScore = normalizedScore; // Full score if not restarted
+        // Adjust the score based on retries (4% for each retry)
+        uint256 adjustedScore = _score > (4 * attempt.retryCount) ? _score - (4 * attempt.retryCount) : 0;
+
+        // Apply time penalty if the quiz duration exceeded
+        if (block.timestamp > attempt.startTime + quiz.duration) {
+            uint256 extraTime = block.timestamp - (attempt.startTime + quiz.duration);
+            uint256 penalty = extraTime / 60; // 1% per extra minute
+            adjustedScore = adjustedScore > penalty ? adjustedScore - penalty : 0;
         }
 
-
-        // Check if the user's score meets the reward threshold
-        if (adjustedScore >= 80) { // Threshold set at 80%
-            // Mark reward as claimable
-            userQuizAttempts[_userAddress][_quizId].eligible = true;
-        }
-
-
-        
-        // Update cumulative score in userData
-        uint256 cumulativeScore = calculateCumulativeScore(_userAddress);
-        userData[_userAddress].score = cumulativeScore;
-
-        // Update attempt data
+        // Update the attempt data
         attempt.state = QuizState.Completed;
         attempt.score = adjustedScore;
         attempt.completionTime = block.timestamp;
+        attempt.eligible = adjustedScore >= quiz.threshold;
 
+        // Update user data and leaderboard
+        _updateUserScoreAndLeaderboard(_userAddress);
 
         // Emit QuizCompleted event
-        emit QuizCompleted(_userAddress, _quizId, adjustedScore, block.timestamp, userQuizAttempts[_userAddress][_quizId].eligible);
-
+        emit QuizCompleted(_userAddress, _quizId, adjustedScore, block.timestamp, attempt.eligible);
     }
+
+
+
+    function _updateUserScoreAndLeaderboard(address _userAddress) internal {
+        uint256 cumulativeScore = _calculateCumulativeScore(_userAddress);
+        userData[_userAddress].score = cumulativeScore;
+        _updateLeaderboard(_userAddress, cumulativeScore);
+    }
+
 
 
 
@@ -300,25 +308,56 @@ contract Quizer is Ownable {
      * @param _userAddress Address of the user.
      * @return The cumulative score.
      */
-    function calculateCumulativeScore(address _userAddress) public view returns (uint256) {
+    function _calculateCumulativeScore(address _userAddress) internal view returns (uint256) {
         uint256 totalScore = 0;
-        uint256 totalPossibleScore = userQuizIds[_userAddress].length * 100;
+        uint256 totalPossibleScore = 0;
 
         for (uint256 i = 0; i < userQuizIds[_userAddress].length; i++) {
             bytes4 quizId = userQuizIds[_userAddress][i];
-            if (userQuizAttempts[_userAddress][quizId].state == QuizState.Completed) {
-                totalScore += userQuizAttempts[_userAddress][quizId].score;
+            QuizAttempt storage attempt = userQuizAttempts[_userAddress][quizId];
+            if (attempt.state == QuizState.Completed) {
+                totalScore += attempt.score;
+                totalPossibleScore += 100; // Each quiz has a max score of 100
             }
         }
 
-        if (totalPossibleScore == 0) {
-            return 0;
-        } else {
-            return (totalScore * 100) / totalPossibleScore;
-        }
+        return totalPossibleScore > 0 ? (totalScore * 100) / totalPossibleScore : 0;
     }
 
 
+
+    function _updateLeaderboard(address _userAddress, uint256 _score) internal {
+        uint256 position = leaderboardPositions[_userAddress];
+
+        if (position == 0) {
+            // New user, add to the leaderboard
+            leaderboard.push(LeaderboardEntry({user: _userAddress, score: _score}));
+            leaderboardPositions[_userAddress] = leaderboard.length;
+        } else {
+            // Update existing user score
+            leaderboard[position - 1].score = _score;
+        }
+
+        // Sort the leaderboard
+        _sortLeaderboard();
+    }
+
+    function _sortLeaderboard() internal {
+        for (uint256 i = 0; i < leaderboard.length - 1; i++) {
+            for (uint256 j = i + 1; j < leaderboard.length; j++) {
+                if (leaderboard[i].score < leaderboard[j].score) {
+                    // Swap entries
+                    LeaderboardEntry memory temp = leaderboard[i];
+                    leaderboard[i] = leaderboard[j];
+                    leaderboard[j] = temp;
+                    
+                    // Update positions
+                    leaderboardPositions[leaderboard[i].user] = i + 1;
+                    leaderboardPositions[leaderboard[j].user] = j + 1;
+                }
+            }
+        }
+    }
 
 
 
